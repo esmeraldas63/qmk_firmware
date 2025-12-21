@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 
-#define CTL_ESC LCTL(KC_ESC)
+#define CTL_ESC LCTL_T(KC_ESC)
 // Left-hand home row mods
 #define HOME_A LT(7, KC_A)
 #define HOME_S LALT_T(KC_S)
@@ -30,11 +30,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define HOME_L LALT_T(KC_L)
 #define HOME_SCLN RGUI_T(KC_SCLN)
 
+#define CBRD_HS LGUI(LSFT(KC_C))
+#define LOCK_PC LGUI(LCTL(KC_Q))
+
 #define PREV_T LCTL(LSFT(KC_TAB))
 #define NEXT_T LCTL(KC_TAB)
-
-// #define NOMODS_THRESHOLD 150 // Typing faster than 150ms disables mods
-// static uint16_t nomods_timer = 0;
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -43,15 +43,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
 	CTL_ESC,	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	KC_G,   	KC_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
-	KC_LSFT,	KC_Z,   	KC_X,   	KC_C,  		KC_V,   	KC_B,   	KC_N,   	KC_M,   	KC_COMM,	KC_DOT,		KC_SLSH,	CW_TOGG,	KC_UP,		KC_DEL,
-	MO(1),	    KC_LALT,	KC_LGUI,										KC_SPC, 							KC_RALT,    KC_RGUI,	KC_LEFT,	KC_DOWN,    KC_RGHT),
+	KC_LSFT,	KC_Z,   	KC_X,   	KC_C,  		KC_V,   	KC_B,   	KC_N,   	KC_M,   	KC_COMM,	KC_DOT,		KC_SLSH,	CW_TOGG,    KC_UP,		KC_DEL,
+	MO(1),	    KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(8),    KC_RGUI,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
 // layer 1 Mac fn
 [1] = LAYOUT(
 	KC_GRV, 	KC_BRID,  	KC_BRIU,  	MAC_TASK, 	MAC_SEARCH, MAC_VOICE,  MAC_DND,  	KC_MPRV,  	KC_MPLY,  	KC_MNXT, 	KC_MUTE, 	KC_VOLD, 	KC_VOLU, 	_______,
 	_______, 	LNK_BLE1,  	LNK_BLE2,  	LNK_BLE3,  	LNK_RF,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	DEV_RESET,	SLEEP_MODE, BAT_SHOW,
 	_______, 	_______,   	_______,   	_______,  	_______,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	_______,	            _______,
-	MO(2),	    _______,   	_______,   	_______,  	_______,   	_______,   	_______,   	MO(6),   	RGB_SPD,	RGB_SPI,  	_______,	MO(2),  	RGB_VAI,    _______,
+	MO(2),	    _______,   	_______,   	_______,  	_______,   	_______,   	_______,   	MO(6),   	RGB_SPD,	RGB_SPI,  	_______,	MO(6),  	RGB_VAI,    _______,
 	_______,	_______,	_______,										_______, 							_______,	_______,   	RGB_MOD,	RGB_VAD,    RGB_HUI),
 
 // layer 2 Mac Fn+shift
@@ -108,6 +108,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	_______, 	_______,    _______,	_______,    _______,    _______,   	KC_LEFT,   	KC_DOWN,   	KC_UP,  	KC_RIGHT,   _______,    _______,	            _______,
 	_______,    _______,   	_______,   	_______,  	_______,   	_______,   	KC_PGDN,    _______,	KC_HOME,  	KC_END,	    _______,    _______,  	_______,    _______,
 	_______,	_______,	_______,										KC_ENTER, 							_______,	_______,   	_______,	_______,    _______),
+
+// layer 8 utils
+[8] = LAYOUT(
+    _______, 	KC_F1,  	KC_F2,  	KC_F3, 		KC_F4,  	KC_F5,  	KC_F6,  	KC_F7,  	KC_F8,  	KC_F9, 		KC_F10, 	KC_F11, 	KC_F12, 	_______,
+	_______, 	LOCK_PC,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	_______,  	_______, 	KC_PSCR, 	_______, 	_______, 	_______,
+	_______, 	_______,    _______,	_______,    _______,    _______,   	_______,   	_______,   	_______,  	_______,    _______,    _______,	            _______,
+	_______,    _______,   	_______,   	CBRD_HS,  	_______,   	_______,   	_______,    _______,	_______,  	_______,	_______,    _______,  	_______,    _______,
+	_______,	_______,	_______,										_______, 							_______,	_______,   	_______,	_______,    _______),
 };
 
 const is31_led PROGMEM g_is31_leds[RGB_MATRIX_LED_COUNT] = {
@@ -189,20 +197,14 @@ const is31_led PROGMEM g_is31_leds[RGB_MATRIX_LED_COUNT] = {
     {1, A_10,   B_10,   C_10}       //
 };
 
-// bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-//     // Record time for "Nomods" behavior
-//     if (record->event.pressed) {
-//         nomods_timer = timer_read();
-//     }
-//     return true;
-// }
+char chordal_hold_handedness(keypos_t key) {
+    if (key.row == MATRIX_ROWS - 1) {
+        return '*';
+    }
 
-// bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
-//                       uint16_t other_keycode, keyrecord_t* other_record) {
-//     // If we typed another key very recently, ignore the "Hold" action (Nomods)
-//     if (timer_elapsed(nomods_timer) < NOMODS_THRESHOLD) {
-//         return false;
-//     }
+    if (key.col >= 12) {
+        return '*';
+    }
 
-//     return get_chordal_hold_default(tap_hold_record, other_record);
-// }
+    return key.col <= 6 ? 'L' : 'R';
+}
