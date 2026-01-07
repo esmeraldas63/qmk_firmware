@@ -30,6 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define HOME_K RSFT_T(KC_K)
 #define HOME_L LALT_T(KC_L)
 #define HOME_SCLN RGUI_T(KC_SCLN)
+#define MOD_H LT(9, KC_H)
 
 #define CBRD_HS LGUI(LSFT(KC_C))
 #define LOCK_PC LGUI(LCTL(KC_Q))
@@ -43,7 +44,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [0] = LAYOUT(
 	KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
-	CTL_ESC,	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	MOD_G,   	KC_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
+	CTL_ESC,	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	MOD_G,   	MOD_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
 	KC_LSFT,	KC_Z,   	KC_X,   	KC_C,  		KC_V,   	KC_B,   	KC_N,   	KC_M,   	KC_COMM,	KC_DOT,		KC_SLSH,	CW_TOGG,    KC_UP,		KC_DEL,
 	MO(1),	    KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(8),     KC_RGUI,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
@@ -96,16 +97,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	_______,	_______,	_______,										_______, 							_______,	_______,   	SIDE_MOD,	SIDE_VAD,    SIDE_HUI),
 
 
-// KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
-// 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
-// 	KC_ESC,	    KC_A,   	KC_S,   	KC_D,  		KC_F,   	KC_G,   	KC_H,   	KC_J,   	KC_K,   	KC_L,  		KC_SCLN,	KC_QUOT, 	            KC_ENT,
-// 	KC_LSFT,	KC_Z,   	KC_X,   	KC_C,  		KC_V,   	KC_B,   	KC_N,   	KC_M,   	KC_COMM,	KC_DOT,		KC_SLSH,	KC_RSFT,	KC_UP,		KC_DEL,
-// 	KC_LCTL,	KC_LALT,	KC_LGUI,										KC_SPC, 							KC_RGUI,	MO(1),   	KC_LEFT,	KC_DOWN,    KC_RGHT),
-
 // layer 7 nav
 [7] = LAYOUT(
 	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	_______,  	_______, 	_______, 	_______, 	_______, 	_______,
-	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	KC_BTN4,  	KC_BTN5, 	KC_PGUP, 	PREV_T, 	NEXT_T, 	_______,
+	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	KC_BSPC,  	KC_BTN5,  	KC_BTN4, 	KC_PGUP, 	PREV_T, 	NEXT_T, 	_______,
 	_______, 	_______,    _______,	_______,    _______,    _______,   	KC_LEFT,   	KC_DOWN,   	KC_UP,  	KC_RIGHT,   _______,    _______,	            _______,
 	_______,    _______,   	_______,   	_______,  	_______,   	_______,   	KC_PGDN,    _______,	KC_HOME,  	KC_END,	    _______,    _______,  	_______,    _______,
 	_______,	_______,	_______,										KC_ENTER, 							_______,	_______,   	_______,	_______,    _______),
@@ -116,6 +111,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	_______, 	LOCK_PC,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	_______,  	_______, 	KC_PSCR, 	_______, 	_______, 	_______,
 	_______, 	_______,    _______,	_______,    _______,    _______,   	_______,   	_______,   	_______,  	_______,    _______,    _______,	            _______,
 	_______,    _______,   	_______,   	CBRD_HS,  	_______,   	_______,   	_______,    _______,	_______,  	_______,	_______,    _______,  	_______,    _______,
+	_______,	_______,	_______,										_______, 							_______,	_______,   	_______,	_______,    _______),
+
+// KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
+// 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
+// 	KC_ESC,	    KC_A,   	KC_S,   	KC_D,  		KC_F,   	KC_G,   	KC_H,   	KC_J,   	KC_K,   	KC_L,  		KC_SCLN,	KC_QUOT, 	            KC_ENT,
+// 	KC_LSFT,	KC_Z,   	KC_X,   	KC_C,  		KC_V,   	KC_B,   	KC_N,   	KC_M,   	KC_COMM,	KC_DOT,		KC_SLSH,	KC_RSFT,	KC_UP,		KC_DEL,
+// 	KC_LCTL,	KC_LALT,	KC_LGUI,										KC_SPC, 							KC_RGUI,	MO(1),   	KC_LEFT,	KC_DOWN,    KC_RGHT),
+
+// layer 9 mouse
+[9] = LAYOUT(
+    _______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	_______,  	_______, 	_______, 	_______, 	_______, 	_______,
+	_______, 	_______,  	_______,  	_______, 	MS_BTN1,  	MS_BTN2,  	_______,  	_______,  	_______,  	_______, 	_______, 	_______, 	_______, 	_______,
+	_______, 	_______,    MS_RGHT,	MS_UP,      MS_DOWN,    MS_LEFT,   	_______,   	_______,   	_______,  	_______,    _______,    _______,	            _______,
+	_______,    _______,   	_______,   	_______,  	MS_WHLL,   	MS_WHLD,   	_______,    _______,	_______,  	_______,	_______,    _______,  	_______,    _______,
 	_______,	_______,	_______,										_______, 							_______,	_______,   	_______,	_______,    _______),
 };
 
