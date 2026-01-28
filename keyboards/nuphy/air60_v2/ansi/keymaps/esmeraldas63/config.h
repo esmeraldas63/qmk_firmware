@@ -76,21 +76,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RGB_MATRIX_KEYPRESSES
 #define RGB_MATRIX_KEYRELEASES
 
-#define CHORDAL_HOLD
 #define PERMISSIVE_HOLD
+#define CHORDAL_HOLD
 
 // Configure the global tapping term (default: 200ms)
-#define TAPPING_TERM 200
+#define TAPPING_TERM 250
 // Enable rapid switch from tap to hold, disables double tap hold auto-repeat.
 #define QUICK_TAP_TERM 150
 
-#undef MOUSEKEY_DELAY
-#define MOUSEKEY_DELAY          0
-#undef MOUSEKEY_INTERVAL
+#define MK_KINETIC_SPEED
+#define MOUSEKEY_INITIAL_SPEED  10
+// #define MOUSEKEY_DECELERATED_SPEED 200
+
+#define MOUSEKEY_DELAY          30
 #define MOUSEKEY_INTERVAL       16
-#undef MOUSEKEY_WHEEL_DELAY
-#define MOUSEKEY_WHEEL_DELAY    0
-#undef MOUSEKEY_MAX_SPEED
+#define MOUSEKEY_WHEEL_DELAY    30
 #define MOUSEKEY_MAX_SPEED      5
-#undef MOUSEKEY_TIME_TO_MAX
-#define MOUSEKEY_TIME_TO_MAX    64
+#define MOUSEKEY_TIME_TO_MAX    32
+#define MOUSEKEY_MOVE_DELTA     1
