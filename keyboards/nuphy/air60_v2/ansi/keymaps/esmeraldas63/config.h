@@ -94,3 +94,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MOUSEKEY_MAX_SPEED      5
 #define MOUSEKEY_TIME_TO_MAX    32
 #define MOUSEKEY_MOVE_DELTA     1
+
+#define FLOW_TAP_TERM 100

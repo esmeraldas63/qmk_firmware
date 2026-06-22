@@ -24,15 +24,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define HOME_D LSFT_T(KC_D)
 #define HOME_F LCTL_T(KC_F)
 #define MOD_G LT(7, KC_G)
-#define MOD_V LT(9, KC_V)
+#define MOD_V LT(SYM, KC_V)
 #define SYM     10
-#define SYM_CMD LT(SYM, KC_LGUI)
+// #define SYM_CMD LT(SYM, KC_LGUI)
 
 // Right-hand home row mods
 #define HOME_J RCTL_T(KC_J)
 #define HOME_K RSFT_T(KC_K)
 #define HOME_L LALT_T(KC_L)
 #define HOME_SCLN RGUI_T(KC_SCLN)
+#define MOD_M LT(SYM, KC_M)
 
 #define CBRD_HS LGUI(LSFT(KC_C))
 #define LOCK_PC LGUI(LCTL(KC_Q))
@@ -48,8 +49,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
 	CTL_ESC,	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	MOD_G,   	KC_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
-	KC_LSFT,	KC_Z,   	KC_X,   	KC_C,  		MOD_V,   	KC_B,   	KC_N,   	KC_M,   	KC_COMM,	KC_DOT,		KC_SLSH,	CW_TOGG,    KC_UP,		KC_DEL,
-	MO(1),	    KC_LALT,	SYM_CMD,										KC_SPC, 							OSL(8),     KC_RGUI,	KC_LEFT,	KC_DOWN,    KC_RGHT),
+	KC_LSFT,	KC_Z,   	KC_X,   	KC_C,  		MOD_V,   	KC_B,   	KC_N,   	MOD_M,   	KC_COMM,	KC_DOT,		KC_SLSH,	CW_TOGG,    KC_UP,		KC_DEL,
+	MO(1),	    KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(8),     KC_RGUI,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
 // layer 1 Mac fn
 [1] = LAYOUT(
@@ -218,17 +219,17 @@ const is31_led PROGMEM g_is31_leds[RGB_MATRIX_LED_COUNT] = {
     {1, A_10,   B_10,   C_10}       //
 };
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case SYM_CMD:
-            if (record->tap.count && record->event.pressed) {
-                set_oneshot_mods(MOD_BIT(KC_LGUI));
-                return false;
-            }
-            return true;
-    }
-    return true;
-}
+// bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+//     switch (keycode) {
+//         case SYM_CMD:
+//             if (record->tap.count && record->event.pressed) {
+//                 set_oneshot_mods(MOD_BIT(KC_LGUI));
+//                 return false;
+//             }
+//             return true;
+//     }
+//     return true;
+// }
 
 char chordal_hold_handedness(keypos_t key) {
     if (key.row == MATRIX_ROWS - 1) {
