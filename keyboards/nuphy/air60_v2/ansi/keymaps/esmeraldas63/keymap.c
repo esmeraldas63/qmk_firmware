@@ -104,7 +104,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // layer 7 nav
 [7] = LAYOUT(
 	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	_______,  	_______, 	_______, 	_______, 	_______, 	_______,
-	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	KC_DEL,  	KC_BSPC,  	KC_BTN5,  	KC_BTN4, 	KC_PGUP, 	PREV_T, 	NEXT_T, 	_______,
+	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	KC_DEL,  	KC_BSPC,  	KC_BTN5,  	KC_BTN4, 	KC_PGUP, 	_______, 	_______, 	_______,
 	_______, 	_______,    _______,	_______,    _______,    _______,   	KC_LEFT,   	KC_DOWN,   	KC_UP,  	KC_RIGHT,   _______,    _______,	            _______,
 	_______,    _______,   	_______,   	QK_LLCK,  	_______,   	_______,   	KC_PGDN,    _______,	KC_HOME,  	KC_END,	    _______,    _______,  	_______,    _______,
 	_______,	_______,	_______,										KC_ENTER, 							_______,	_______,   	_______,	_______,    _______),
@@ -128,7 +128,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, KC_GRV,  KC_LT,   KC_GT,   KC_MINS, KC_PIPE, KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  _______, _______, _______, _______,
     _______, KC_EXLM, KC_ASTR, KC_SLSH, KC_EQL,  KC_AMPR, KC_HASH, KC_LPRN, KC_RPRN, KC_SCLN, KC_DQUO, _______,          _______,
-    _______, KC_TILD, KC_PLUS, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   KC_COLN, KC_COMM, KC_QUOT, _______, _______, _______, _______,
+    _______, KC_TILD, KC_PLUS, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   KC_COLN, KC_COMM, KC_DOT,  KC_QUOT, _______, _______, _______,
     _______, _______, _______,                    _______,                    _______, _______, _______, _______, _______),
 
 // layer 9 mouse
@@ -219,17 +219,27 @@ const is31_led PROGMEM g_is31_leds[RGB_MATRIX_LED_COUNT] = {
     {1, A_10,   B_10,   C_10}       //
 };
 
-// bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-//     switch (keycode) {
-//         case SYM_CMD:
-//             if (record->tap.count && record->event.pressed) {
-//                 set_oneshot_mods(MOD_BIT(KC_LGUI));
-//                 return false;
-//             }
-//             return true;
-//     }
-//     return true;
-// }
+bool is_flow_tap_key(uint16_t keycode) {
+    if ((get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) != 0) {
+        return false; // Disable Flow Tap on hotkeys.
+    }
+
+    switch (get_tap_keycode(keycode)) {
+        case KC_SPC:
+        case KC_A:
+        case KC_S:
+        case KC_H:
+        case KC_J:
+        case KC_L:
+        case KC_Z:
+        case KC_DOT:
+        case KC_COMM:
+        case KC_SLSH:
+            return true;
+    }
+
+    return false;
+}
 
 char chordal_hold_handedness(keypos_t key) {
     if (key.row == MATRIX_ROWS - 1) {
