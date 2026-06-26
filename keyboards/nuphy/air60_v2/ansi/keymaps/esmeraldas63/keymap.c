@@ -234,6 +234,8 @@ bool is_flow_tap_key(uint16_t keycode) {
         case KC_J:
         case KC_L:
         case KC_Z:
+        case KC_M:
+        case KC_V:
         case KC_DOT:
         case KC_COMM:
         case KC_SLSH:
@@ -258,4 +260,14 @@ char chordal_hold_handedness(keypos_t key) {
     }
 
     return key.col <= 5 ? 'L' : 'R';
+}
+
+bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case MOD_M:
+        case MOD_V:
+            return true;
+        default:
+            return false;
+    }
 }
