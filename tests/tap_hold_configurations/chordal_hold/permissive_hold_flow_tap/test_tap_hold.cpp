@@ -22,15 +22,15 @@
 using testing::_;
 using testing::InSequence;
 
-class ChordalHoldPermissiveHold : public TestFixture {};
+class ChordalHoldPermissiveHoldFlowTap : public TestFixture {};
 
-TEST_F(ChordalHoldPermissiveHold, chordal_hold_handedness) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, chordal_hold_handedness) {
     EXPECT_EQ(chordal_hold_handedness({.col = 0, .row = 0}), 'L');
     EXPECT_EQ(chordal_hold_handedness({.col = MATRIX_COLS - 1, .row = 0}), 'R');
     EXPECT_EQ(chordal_hold_handedness({.col = 0, .row = 2}), '*');
 }
 
-TEST_F(ChordalHoldPermissiveHold, get_chordal_hold_default) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, get_chordal_hold_default) {
     auto make_record = [](uint8_t row, uint8_t col, keyevent_type_t type = KEY_EVENT) {
         return keyrecord_t{
             .event =
@@ -68,7 +68,7 @@ TEST_F(ChordalHoldPermissiveHold, get_chordal_hold_default) {
     EXPECT_TRUE(get_chordal_hold_default(&record_combo, &record_r));
 }
 
-TEST_F(ChordalHoldPermissiveHold, chord_nested_press_settled_as_hold) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, chord_nested_press_settled_as_hold) {
     TestDriver driver;
     InSequence s;
     // Mod-tap key on the left hand.
@@ -98,7 +98,7 @@ TEST_F(ChordalHoldPermissiveHold, chord_nested_press_settled_as_hold) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, chord_rolled_press_settled_as_tap) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, chord_rolled_press_settled_as_tap) {
     TestDriver driver;
     InSequence s;
     // Mod-tap key on the left hand.
@@ -131,7 +131,7 @@ TEST_F(ChordalHoldPermissiveHold, chord_rolled_press_settled_as_tap) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, non_chord_with_mod_tap_settled_as_tap) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, non_chord_with_mod_tap_settled_as_tap) {
     TestDriver driver;
     InSequence s;
     // Mod-tap key and regular key both on the left hand.
@@ -166,7 +166,7 @@ TEST_F(ChordalHoldPermissiveHold, non_chord_with_mod_tap_settled_as_tap) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, tap_mod_tap_key) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, tap_mod_tap_key) {
     TestDriver driver;
     InSequence s;
     auto       mod_tap_key = KeymapKey(0, 1, 0, SFT_T(KC_P));
@@ -185,7 +185,7 @@ TEST_F(ChordalHoldPermissiveHold, tap_mod_tap_key) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, hold_mod_tap_key) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, hold_mod_tap_key) {
     TestDriver driver;
     InSequence s;
     auto       mod_tap_key = KeymapKey(0, 1, 0, SFT_T(KC_P));
@@ -203,7 +203,7 @@ TEST_F(ChordalHoldPermissiveHold, hold_mod_tap_key) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, two_mod_taps_same_hand_hold_til_timeout) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, two_mod_taps_same_hand_hold_til_timeout) {
     TestDriver driver;
     InSequence s;
     auto       mod_tap_key1 = KeymapKey(0, MATRIX_COLS - 2, 0, RCTL_T(KC_A));
@@ -237,7 +237,7 @@ TEST_F(ChordalHoldPermissiveHold, two_mod_taps_same_hand_hold_til_timeout) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, two_mod_taps_nested_press_opposite_hands) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, two_mod_taps_nested_press_opposite_hands) {
     TestDriver driver;
     InSequence s;
     auto       mod_tap_key1 = KeymapKey(0, 1, 0, SFT_T(KC_A));
@@ -267,7 +267,7 @@ TEST_F(ChordalHoldPermissiveHold, two_mod_taps_nested_press_opposite_hands) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, two_mod_taps_nested_press_same_hand) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, two_mod_taps_nested_press_same_hand) {
     TestDriver driver;
     InSequence s;
     auto       mod_tap_key1 = KeymapKey(0, 1, 0, SFT_T(KC_A));
@@ -296,7 +296,7 @@ TEST_F(ChordalHoldPermissiveHold, two_mod_taps_nested_press_same_hand) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, three_mod_taps_same_hand_streak_roll) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, three_mod_taps_same_hand_streak_roll) {
     TestDriver driver;
     InSequence s;
     auto       mod_tap_key1 = KeymapKey(0, 1, 0, SFT_T(KC_A));
@@ -316,20 +316,10 @@ TEST_F(ChordalHoldPermissiveHold, three_mod_taps_same_hand_streak_roll) {
     VERIFY_AND_CLEAR(driver);
 
     // Release keys 1, 2, 3.
-    //
-    // NOTE: The correct order of events should be
-    // EXPECT_REPORT(driver, (KC_A, KC_B, KC_C));
-    // EXPECT_REPORT(driver, (KC_B, KC_C));
-    // EXPECT_REPORT(driver, (KC_C));
-    // EXPECT_EMPTY_REPORT(driver);
-    //
-    // However, due to a workaround for https://github.com/tmk/tmk_keyboard/issues/60,
-    // the events are processed out of order, with the first two keys released
-    // before pressing KC_C.
     EXPECT_REPORT(driver, (KC_A));
     EXPECT_REPORT(driver, (KC_A, KC_B));
-    EXPECT_REPORT(driver, (KC_B));
-    EXPECT_EMPTY_REPORT(driver);
+    EXPECT_REPORT(driver, (KC_A, KC_B, KC_C));
+    EXPECT_REPORT(driver, (KC_B, KC_C));
     EXPECT_REPORT(driver, (KC_C));
     EXPECT_EMPTY_REPORT(driver);
     mod_tap_key1.release();
@@ -341,7 +331,7 @@ TEST_F(ChordalHoldPermissiveHold, three_mod_taps_same_hand_streak_roll) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, three_mod_taps_same_hand_streak_orders) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, three_mod_taps_same_hand_streak_orders) {
     TestDriver driver;
     InSequence s;
     auto       mod_tap_key1 = KeymapKey(0, 1, 0, SFT_T(KC_A));
@@ -421,18 +411,9 @@ TEST_F(ChordalHoldPermissiveHold, three_mod_taps_same_hand_streak_orders) {
     VERIFY_AND_CLEAR(driver);
 
     // Release keys 2, 3, 1.
-    //
-    // NOTE: The correct order of events should be
-    // EXPECT_REPORT(driver, (KC_A, KC_B, KC_C));
-    // EXPECT_REPORT(driver, (KC_A, KC_C));
-    // EXPECT_REPORT(driver, (KC_A));
-    // EXPECT_EMPTY_REPORT(driver);
-    //
-    // However, due to a workaround for https://github.com/tmk/tmk_keyboard/issues/60,
-    // the events are processed out of order.
     EXPECT_REPORT(driver, (KC_A));
     EXPECT_REPORT(driver, (KC_A, KC_B));
-    EXPECT_REPORT(driver, (KC_A));
+    EXPECT_REPORT(driver, (KC_A, KC_B, KC_C));
     EXPECT_REPORT(driver, (KC_A, KC_C));
     EXPECT_REPORT(driver, (KC_A));
     EXPECT_EMPTY_REPORT(driver);
@@ -448,7 +429,7 @@ TEST_F(ChordalHoldPermissiveHold, three_mod_taps_same_hand_streak_orders) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, three_mod_taps_opposite_hands_roll) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, three_mod_taps_opposite_hands_roll) {
     TestDriver driver;
     InSequence s;
     auto       mod_tap_key1 = KeymapKey(0, 1, 0, SFT_T(KC_A));
@@ -468,21 +449,10 @@ TEST_F(ChordalHoldPermissiveHold, three_mod_taps_opposite_hands_roll) {
     VERIFY_AND_CLEAR(driver);
 
     // Release keys 1, 2, 3.
-    //
-    // NOTE: The correct order of events should be
-    // EXPECT_REPORT(driver, (KC_A, KC_B));
-    // EXPECT_REPORT(driver, (KC_A, KC_B, KC_C));
-    // EXPECT_REPORT(driver, (KC_B, KC_C));
-    // EXPECT_REPORT(driver, (KC_C));
-    // EXPECT_EMPTY_REPORT(driver);
-    //
-    // However, due to a workaround for https://github.com/tmk/tmk_keyboard/issues/60,
-    // the events are processed out of order, with the first two keys released
-    // before pressing KC_C.
     EXPECT_REPORT(driver, (KC_A));
     EXPECT_REPORT(driver, (KC_A, KC_B));
-    EXPECT_REPORT(driver, (KC_B));
-    EXPECT_EMPTY_REPORT(driver);
+    EXPECT_REPORT(driver, (KC_A, KC_B, KC_C));
+    EXPECT_REPORT(driver, (KC_B, KC_C));
     EXPECT_REPORT(driver, (KC_C));
     EXPECT_EMPTY_REPORT(driver);
     mod_tap_key1.release();
@@ -494,7 +464,7 @@ TEST_F(ChordalHoldPermissiveHold, three_mod_taps_opposite_hands_roll) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, three_mod_taps_two_left_one_right) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, three_mod_taps_two_left_one_right) {
     TestDriver driver;
     InSequence s;
     auto       mod_tap_key1 = KeymapKey(0, 1, 0, SFT_T(KC_A));
@@ -565,7 +535,7 @@ TEST_F(ChordalHoldPermissiveHold, three_mod_taps_two_left_one_right) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, three_mod_taps_one_held_two_tapped) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, three_mod_taps_one_held_two_tapped) {
     TestDriver driver;
     InSequence s;
     auto       mod_tap_key1 = KeymapKey(0, 1, 0, SFT_T(KC_A));
@@ -634,7 +604,7 @@ TEST_F(ChordalHoldPermissiveHold, three_mod_taps_one_held_two_tapped) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, two_mod_taps_one_regular_key) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, two_mod_taps_one_regular_key) {
     TestDriver driver;
     InSequence s;
     auto       mod_tap_key1 = KeymapKey(0, 1, 0, SFT_T(KC_A));
@@ -703,7 +673,7 @@ TEST_F(ChordalHoldPermissiveHold, two_mod_taps_one_regular_key) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, tap_regular_key_while_layer_tap_key_is_held) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, tap_regular_key_while_layer_tap_key_is_held) {
     TestDriver driver;
     InSequence s;
     auto       layer_tap_hold_key = KeymapKey(0, 1, 0, LT(1, KC_P));
@@ -738,7 +708,7 @@ TEST_F(ChordalHoldPermissiveHold, tap_regular_key_while_layer_tap_key_is_held) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, nested_tap_of_layer_0_layer_tap_keys) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, nested_tap_of_layer_0_layer_tap_keys) {
     TestDriver driver;
     InSequence s;
     // The keys are layer-taps on layer 2 but regular keys on layer 1.
@@ -774,7 +744,7 @@ TEST_F(ChordalHoldPermissiveHold, nested_tap_of_layer_0_layer_tap_keys) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, lt_mt_one_regular_key) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, lt_mt_one_regular_key) {
     TestDriver driver;
     InSequence s;
     auto       lt_key      = KeymapKey(0, 1, 0, LT(1, KC_A));
@@ -821,7 +791,7 @@ TEST_F(ChordalHoldPermissiveHold, lt_mt_one_regular_key) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, nested_tap_of_layer_tap_keys) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, nested_tap_of_layer_tap_keys) {
     TestDriver driver;
     InSequence s;
     // The keys are layer-taps on all layers.
@@ -860,7 +830,7 @@ TEST_F(ChordalHoldPermissiveHold, nested_tap_of_layer_tap_keys) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, roll_layer_tap_key_with_regular_key) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, roll_layer_tap_key_with_regular_key) {
     TestDriver driver;
     InSequence s;
 
@@ -897,7 +867,7 @@ TEST_F(ChordalHoldPermissiveHold, roll_layer_tap_key_with_regular_key) {
     VERIFY_AND_CLEAR(driver);
 }
 
-TEST_F(ChordalHoldPermissiveHold, two_mod_tap_keys_stuttered_press) {
+TEST_F(ChordalHoldPermissiveHoldFlowTap, two_mod_tap_keys_stuttered_press) {
     TestDriver driver;
     InSequence s;
 
