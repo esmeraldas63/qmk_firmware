@@ -81,6 +81,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define HOLD_ON_OTHER_KEY_PRESS_PER_KEY
 #define TAPPING_TERM 250
 #define QUICK_TAP_TERM 150
+#define SPECULATIVE_HOLD
 
 #define MK_KINETIC_SPEED
 #define MOUSEKEY_INITIAL_SPEED  10

@@ -262,12 +262,12 @@ char chordal_hold_handedness(keypos_t key) {
     return key.col <= 5 ? 'L' : 'R';
 }
 
-bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case MOD_M:
-        case MOD_V:
-            return true;
-        default:
-            return false;
-    }
-}
+// bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+//     switch (keycode) {
+//         case MOD_M:
+//         case MOD_V:
+//             return true;
+//         default:
+//             return false;
+//     }
+// }
