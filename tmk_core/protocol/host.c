@@ -70,11 +70,10 @@ uint8_t host_keyboard_leds(void) {
 led_t host_keyboard_led_state(void) {
     return (led_t)host_keyboard_leds();
 }
-
-extern void uart_send_report_func(void);        
-extern void uart_send_mouse_report(void);       
-extern void uart_send_consumer_report(void);    
-extern void uart_send_system_report(void);      
+__attribute__((weak)) void uart_send_report_func(void) {}
+__attribute__((weak)) void uart_send_mouse_report(void) {}
+__attribute__((weak)) void uart_send_consumer_report(void) {}
+__attribute__((weak)) void uart_send_system_report(void) {}
 
 /* send report */
 void host_keyboard_send(report_keyboard_t *report) {
