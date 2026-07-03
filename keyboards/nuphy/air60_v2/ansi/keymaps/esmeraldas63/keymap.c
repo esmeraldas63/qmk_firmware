@@ -16,10 +16,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include QMK_KEYBOARD_H
+#define C(kc) LCTL(kc)
+
 #define SYM     10
 #define NUM     11
 
-#define CTL_ESC LCTL_T(KC_ESC)
 // Left-hand home row mods
 #define HOME_A LGUI_T(KC_A)
 #define HOME_S LALT_T(KC_S)
@@ -45,22 +46,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define NEXT_T LCTL(KC_TAB)
 
 enum combos {
-    DF_NAV_COMBO,
-    JK_NUM_COMBO,
-    DK_CAPS_COMBO,
-    FJ_ESC_COMBO,
+    NAV_COMBO,
+    NUM_COMBO,
+    CAPS_COMBO,
+    // ESC_COMBO,
 };
 
 const uint16_t PROGMEM df_nav_combo[] = {HOME_D, HOME_F, COMBO_END};
 const uint16_t PROGMEM jk_num_combo[] = {HOME_J, HOME_K, COMBO_END};
-const uint16_t PROGMEM dk_caps_combo[] = {HOME_D, HOME_K, COMBO_END};
-const uint16_t PROGMEM fj_esc_combo[]  = {HOME_F, HOME_J, COMBO_END};
+const uint16_t PROGMEM sdf_caps_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
+// const uint16_t PROGMEM fj_esc_combo[]  = {HOME_F, HOME_J, COMBO_END};
 
 combo_t key_combos[] = {
-    [DF_NAV_COMBO] = COMBO_ACTION(df_nav_combo),
-    [JK_NUM_COMBO] = COMBO_ACTION(jk_num_combo),
-    [DK_CAPS_COMBO] = COMBO_ACTION(dk_caps_combo),
-    [FJ_ESC_COMBO] = COMBO_ACTION(fj_esc_combo),
+    [NAV_COMBO] = COMBO_ACTION(df_nav_combo),
+    [NUM_COMBO] = COMBO_ACTION(jk_num_combo),
+    [CAPS_COMBO] = COMBO_ACTION(sdf_caps_combo),
+    // [ESC_COMBO] = COMBO_ACTION(sdf_esc_combo),
 };
 void process_combo_event(uint16_t combo_index, bool pressed) {
     if (!pressed) {
@@ -68,30 +69,30 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
     }
 
     switch (combo_index) {
-        case DF_NAV_COMBO:
+        case NAV_COMBO:
             layer_on(7);
             break;
 
-        case JK_NUM_COMBO:
+        case NUM_COMBO:
             layer_on(NUM);
             break;
 
-        case DK_CAPS_COMBO:
+        case CAPS_COMBO:
             caps_word_on();
             break;
 
-        case FJ_ESC_COMBO:
-            tap_code16(KC_ESC);
-            break;
+        // case ESC_COMBO:
+        //     tap_code16(KC_ESC);
+        //     break;
     }
 }
 
 bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
     switch (combo_index) {
-        case DF_NAV_COMBO:
-        case JK_NUM_COMBO:
-        case DK_CAPS_COMBO:
-        case FJ_ESC_COMBO:
+        case NAV_COMBO:
+        case NUM_COMBO:
+        case CAPS_COMBO:
+        // case ESC_COMBO:
             return true;
     }
     return false;
@@ -138,7 +139,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [0] = LAYOUT(
 	KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
-	CTL_ESC,	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	MOD_G,   	MOD_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
+	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	MOD_G,   	MOD_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
 	KC_LSFT,	KC_Z,   	KC_X,   	KC_C,  		MOD_V,   	KC_B,   	KC_N,   	MOD_M,   	KC_COMM,	KC_DOT,		KC_SLSH,	CW_TOGG,    KC_UP,		KC_DEL,
 	MO(1),	    KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(8),     KC_RGUI,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
@@ -216,18 +217,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [NUM] = LAYOUT(
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-    _______, KC_SLASH,    KC_7,    KC_8,    KC_9,    KC_ASTR, _______, _______, _______, _______, _______, _______, _______, _______,
-    _______,    KC_0,    KC_1,    KC_2,    KC_3,    KC_PERC, _______, _______, _______, _______, _______, _______,          _______,
-    _______, KC_MINS,    KC_4,    KC_5,    KC_6,    KC_PLUS, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, KC_0,    KC_7,    KC_8,    KC_9,    _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, KC_0,    KC_4,    KC_5,    KC_6,    _______, _______, _______, _______, _______, _______, _______,          _______,
+    _______, KC_0,    KC_1,    KC_2,    KC_3,    _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______,                    _______,                    _______, _______, _______, _______, _______),
 
 // layer 9 mouse
-[9] = LAYOUT(
-    _______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	_______,  	_______, 	_______, 	_______, 	_______, 	_______,
-	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	MS_BTN1,  	MS_BTN2, 	MS_WHLU, 	_______, 	_______, 	_______,
-	_______, 	_______,    _______,	_______,    _______,    _______,   	MS_LEFT,   	MS_DOWN,   	MS_UP,  	MS_RGHT,    _______,    _______,	            _______,
-	_______,    _______,   	_______,   	QK_LLCK, 	_______,   	_______,   	MS_WHLD,    _______,	_______,  	_______,	_______,    _______,  	_______,    _______,
-	_______,	_______,	_______,										MS_BTN1, 							_______,	_______,   	_______,	_______,    _______),
+// [9] = LAYOUT(
+//     _______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	_______,  	_______, 	_______, 	_______, 	_______, 	_______,
+// 	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	MS_BTN1,  	MS_BTN2, 	MS_WHLU, 	_______, 	_______, 	_______,
+// 	_______, 	_______,    _______,	_______,    _______,    _______,   	MS_LEFT,   	MS_DOWN,   	MS_UP,  	MS_RGHT,    _______,    _______,	            _______,
+// 	_______,    _______,   	_______,   	QK_LLCK, 	_______,   	_______,   	MS_WHLD,    _______,	_______,  	_______,	_______,    _______,  	_______,    _______,
+// 	_______,	_______,	_______,										MS_BTN1, 							_______,	_______,   	_______,	_______,    _______),
 };
 
 const is31_led PROGMEM g_is31_leds[RGB_MATRIX_LED_COUNT] = {
