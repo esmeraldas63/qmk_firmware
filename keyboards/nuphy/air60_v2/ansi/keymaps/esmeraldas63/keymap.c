@@ -44,6 +44,64 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define PREV_T LCTL(LSFT(KC_TAB))
 #define NEXT_T LCTL(KC_TAB)
 
+enum combos {
+    DF_NAV_COMBO,
+    JK_NUM_COMBO,
+};
+
+const uint16_t PROGMEM df_nav_combo[] = {HOME_D, HOME_F, COMBO_END};
+const uint16_t PROGMEM jk_num_combo[] = {HOME_J, HOME_K, COMBO_END};
+
+combo_t key_combos[] = {
+    [DF_NAV_COMBO] = COMBO_ACTION(df_nav_combo),
+    [JK_NUM_COMBO] = COMBO_ACTION(jk_num_combo),
+};
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!record->event.pressed) return true;
+
+    if (layer_state_is(7)) {
+        switch (keycode) {
+            case HOME_D:
+            case HOME_F:
+            case MOD_G:
+                layer_off(7);
+                return false;
+
+            case KC_ENT:
+                layer_off(7);
+                tap_code(KC_ENT);
+                return false;
+        }
+    }
+
+    if (layer_state_is(NUM)) {
+        switch (keycode) {
+            case MOD_H:
+                layer_off(NUM);
+                return false;
+            case HOME_J:
+            case HOME_K:
+                layer_off(NUM);
+                break;
+            case KC_ENT:
+                layer_off(NUM);
+                return false;
+        }
+    }
+
+    return true;
+}
+
+void process_combo_event(uint16_t combo_index, bool pressed) {
+    if (combo_index == DF_NAV_COMBO && pressed) {
+        layer_on(7);
+    }
+    if (combo_index == JK_NUM_COMBO && pressed) {
+        layer_on(NUM);
+    }
+}
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 // layer 0 Mac
@@ -128,9 +186,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [NUM] = LAYOUT(
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-    _______, KC_0,    KC_7,    KC_8,    KC_9,    _______, _______, _______, _______, _______, _______, _______, _______, _______,
-    _______, KC_0,    KC_4,    KC_5,    KC_6,    _______, _______, _______, _______, _______, _______, _______,          _______,
-    _______, KC_0,    KC_1,    KC_2,    KC_3,    _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, KC_SLASH,    KC_7,    KC_8,    KC_9,    KC_ASTR, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______,    KC_0,    KC_1,    KC_2,    KC_3,    KC_PERC, _______, _______, _______, _______, _______, _______,          _______,
+    _______, KC_MINS,    KC_4,    KC_5,    KC_6,    KC_PLUS, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______,                    _______,                    _______, _______, _______, _______, _______),
 
 // layer 9 mouse
