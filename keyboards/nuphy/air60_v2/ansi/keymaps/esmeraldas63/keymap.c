@@ -47,23 +47,61 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 enum combos {
     DF_NAV_COMBO,
     JK_NUM_COMBO,
+    DK_CAPS_COMBO,
+    FJ_ESC_COMBO,
 };
 
 const uint16_t PROGMEM df_nav_combo[] = {HOME_D, HOME_F, COMBO_END};
 const uint16_t PROGMEM jk_num_combo[] = {HOME_J, HOME_K, COMBO_END};
+const uint16_t PROGMEM dk_caps_combo[] = {HOME_D, HOME_K, COMBO_END};
+const uint16_t PROGMEM fj_esc_combo[]  = {HOME_F, HOME_J, COMBO_END};
 
 combo_t key_combos[] = {
     [DF_NAV_COMBO] = COMBO_ACTION(df_nav_combo),
     [JK_NUM_COMBO] = COMBO_ACTION(jk_num_combo),
+    [DK_CAPS_COMBO] = COMBO_ACTION(dk_caps_combo),
+    [FJ_ESC_COMBO] = COMBO_ACTION(fj_esc_combo),
 };
+void process_combo_event(uint16_t combo_index, bool pressed) {
+    if (!pressed) {
+        return;
+    }
+
+    switch (combo_index) {
+        case DF_NAV_COMBO:
+            layer_on(7);
+            break;
+
+        case JK_NUM_COMBO:
+            layer_on(NUM);
+            break;
+
+        case DK_CAPS_COMBO:
+            caps_word_on();
+            break;
+
+        case FJ_ESC_COMBO:
+            tap_code16(KC_ESC);
+            break;
+    }
+}
+
+bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
+    switch (combo_index) {
+        case DF_NAV_COMBO:
+        case JK_NUM_COMBO:
+        case DK_CAPS_COMBO:
+        case FJ_ESC_COMBO:
+            return true;
+    }
+    return false;
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!record->event.pressed) return true;
 
     if (layer_state_is(7)) {
         switch (keycode) {
-            case HOME_D:
-            case HOME_F:
             case MOD_G:
                 layer_off(7);
                 return false;
@@ -84,7 +122,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case HOME_K:
                 layer_off(NUM);
                 break;
-            case KC_ENT:
+            case KC_SPC:
                 layer_off(NUM);
                 return false;
         }
@@ -93,14 +131,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
-void process_combo_event(uint16_t combo_index, bool pressed) {
-    if (combo_index == DF_NAV_COMBO && pressed) {
-        layer_on(7);
-    }
-    if (combo_index == JK_NUM_COMBO && pressed) {
-        layer_on(NUM);
-    }
-}
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
