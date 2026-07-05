@@ -35,7 +35,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define HOME_L LALT_T(KC_L)
 #define HOME_SCLN RGUI_T(KC_SCLN)
 #define MOD_M LT(SYM, KC_M)
-// #define MOD_M MO(SYM)
 #define MOD_H LT(NUM, KC_H)
 
 #define CBRD_HS LGUI(LSFT(KC_C))
@@ -49,19 +48,16 @@ enum combos {
     NAV_COMBO,
     NUM_COMBO,
     CAPS_COMBO,
-    // ESC_COMBO,
 };
 
 const uint16_t PROGMEM df_nav_combo[] = {HOME_D, HOME_F, COMBO_END};
 const uint16_t PROGMEM jk_num_combo[] = {HOME_J, HOME_K, COMBO_END};
 const uint16_t PROGMEM sdf_caps_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
-// const uint16_t PROGMEM fj_esc_combo[]  = {HOME_F, HOME_J, COMBO_END};
 
 combo_t key_combos[] = {
     [NAV_COMBO] = COMBO_ACTION(df_nav_combo),
     [NUM_COMBO] = COMBO_ACTION(jk_num_combo),
     [CAPS_COMBO] = COMBO_ACTION(sdf_caps_combo),
-    // [ESC_COMBO] = COMBO_ACTION(sdf_esc_combo),
 };
 void process_combo_event(uint16_t combo_index, bool pressed) {
     if (!pressed) {
@@ -80,10 +76,6 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
         case CAPS_COMBO:
             caps_word_on();
             break;
-
-        // case ESC_COMBO:
-        //     tap_code16(KC_ESC);
-        //     break;
     }
 }
 
@@ -92,7 +84,6 @@ bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
         case NAV_COMBO:
         case NUM_COMBO:
         case CAPS_COMBO:
-        // case ESC_COMBO:
             return true;
     }
     return false;
@@ -104,9 +95,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (layer_state_is(7)) {
         switch (keycode) {
             case MOD_G:
+            case KC_ESC:
                 layer_off(7);
                 return false;
-
             case KC_ENT:
                 layer_off(7);
                 tap_code(KC_ENT);
@@ -117,14 +108,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (layer_state_is(NUM)) {
         switch (keycode) {
             case MOD_H:
+            case KC_ESC:
                 layer_off(NUM);
                 return false;
             case HOME_J:
             case HOME_K:
                 layer_off(NUM);
                 break;
-            case KC_SPC:
+            case KC_ENT:
                 layer_off(NUM);
+                tap_code(KC_ENT);
+                return false;
+        }
+    }
+
+    if (is_caps_word_on()) {
+        switch (keycode) {
+            case KC_ESC:
+                caps_word_off();
                 return false;
         }
     }
@@ -140,7 +141,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
 	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	MOD_G,   	MOD_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
-	KC_LSFT,	KC_Z,   	KC_X,   	KC_C,  		MOD_V,   	KC_B,   	KC_N,   	MOD_M,   	KC_COMM,	KC_DOT,		KC_SLSH,	CW_TOGG,    KC_UP,		KC_DEL,
+	KC_LSFT,	KC_Z,   	KC_X,   	KC_C,  		MOD_V,   	KC_B,   	KC_N,   	MOD_M,   	KC_COMM,	KC_DOT,		KC_SLSH,	QK_REP,     KC_UP,		QK_AREP,
 	MO(1),	    KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(8),     KC_RGUI,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
 // layer 1 Mac fn
@@ -210,9 +211,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [SYM] = LAYOUT(
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-    _______, KC_GRV,  KC_LT,   KC_GT,   KC_MINS, KC_PIPE, KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  KC_UNDS, _______, _______, _______,
+    _______, KC_GRV,  KC_LT,   KC_GT,   KC_MINS, KC_PIPE, KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  KC_PERC, _______, _______, _______,
     _______, KC_EXLM, KC_ASTR, KC_SLSH, KC_EQL,  KC_AMPR, KC_HASH, KC_LPRN, KC_RPRN, KC_SCLN, KC_DQUO, _______,          _______,
-    _______, KC_TILD, KC_PLUS, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   KC_COLN, KC_COMM, KC_DOT,  KC_QUOT, _______, _______, _______,
+    _______, KC_TILD, KC_PLUS, KC_LBRC, KC_RBRC, KC_UNDS, KC_AT,   KC_COLN, KC_COMM, KC_DOT,  KC_QUOT, _______, _______, _______,
     _______, _______, _______,                    _______,                    _______, _______, _______, _______, _______),
 
 [NUM] = LAYOUT(
@@ -220,15 +221,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______, KC_0,    KC_7,    KC_8,    KC_9,    _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, KC_0,    KC_4,    KC_5,    KC_6,    _______, _______, _______, _______, _______, _______, _______,          _______,
     _______, KC_0,    KC_1,    KC_2,    KC_3,    _______, _______, _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______,                    _______,                    _______, _______, _______, _______, _______),
-
-// layer 9 mouse
-// [9] = LAYOUT(
-//     _______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	_______,  	_______, 	_______, 	_______, 	_______, 	_______,
-// 	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	MS_BTN1,  	MS_BTN2, 	MS_WHLU, 	_______, 	_______, 	_______,
-// 	_______, 	_______,    _______,	_______,    _______,    _______,   	MS_LEFT,   	MS_DOWN,   	MS_UP,  	MS_RGHT,    _______,    _______,	            _______,
-// 	_______,    _______,   	_______,   	QK_LLCK, 	_______,   	_______,   	MS_WHLD,    _______,	_______,  	_______,	_______,    _______,  	_______,    _______,
-// 	_______,	_______,	_______,										MS_BTN1, 							_______,	_______,   	_______,	_______,    _______),
+    _______, _______, _______,                    KC_ENTER,                    _______, _______, _______, _______, _______),
 };
 
 const is31_led PROGMEM g_is31_leds[RGB_MATRIX_LED_COUNT] = {
@@ -350,13 +343,3 @@ char chordal_hold_handedness(keypos_t key) {
 
     return key.col <= 5 ? 'L' : 'R';
 }
-
-// bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
-//     switch (keycode) {
-//         case MOD_M:
-//         case MOD_V:
-//             return true;
-//         default:
-//             return false;
-//     }
-// }
