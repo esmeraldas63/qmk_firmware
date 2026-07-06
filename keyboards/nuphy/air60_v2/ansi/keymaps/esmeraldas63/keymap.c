@@ -46,18 +46,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 enum combos {
     NAV_COMBO,
+    ENTER_COMBO,
     NUM_COMBO,
     CAPS_COMBO,
+    ESC_COMBO,
 };
 
-const uint16_t PROGMEM df_nav_combo[] = {HOME_D, HOME_F, COMBO_END};
-const uint16_t PROGMEM jk_num_combo[] = {HOME_J, HOME_K, COMBO_END};
-const uint16_t PROGMEM sdf_caps_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
+const uint16_t PROGMEM df_combo[] = {HOME_D, HOME_F, COMBO_END};
+const uint16_t PROGMEM jk_combo[] = {HOME_J, HOME_K, COMBO_END};
+const uint16_t PROGMEM sd_combo[] = {HOME_S, HOME_D, COMBO_END};
+const uint16_t PROGMEM jkl_combo[] = {HOME_J, HOME_K, HOME_L, COMBO_END};
+const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
 
 combo_t key_combos[] = {
-    [NAV_COMBO] = COMBO_ACTION(df_nav_combo),
-    [NUM_COMBO] = COMBO_ACTION(jk_num_combo),
-    [CAPS_COMBO] = COMBO_ACTION(sdf_caps_combo),
+    [NAV_COMBO] = COMBO_ACTION(df_combo),
+    [ENTER_COMBO] = COMBO_ACTION(jk_combo),
+    [NUM_COMBO] = COMBO_ACTION(jkl_combo),
+    [CAPS_COMBO] = COMBO_ACTION(sdf_combo),
+    [ESC_COMBO] = COMBO_ACTION(sd_combo),
 };
 void process_combo_event(uint16_t combo_index, bool pressed) {
     if (!pressed) {
@@ -76,6 +82,23 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
         case CAPS_COMBO:
             caps_word_on();
             break;
+
+        case ENTER_COMBO:
+            tap_code(KC_ENT);
+            break;
+
+        case ESC_COMBO:
+            if (layer_state_is(7)) {
+               layer_off(7);
+            }
+            if (is_caps_word_on()) {
+               caps_word_off();
+            }
+            if (layer_state_is(NUM)) {
+               layer_off(NUM);
+            }
+            tap_code(KC_ESC);
+            break;
     }
 }
 
@@ -84,6 +107,8 @@ bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
         case NAV_COMBO:
         case NUM_COMBO:
         case CAPS_COMBO:
+        case ENTER_COMBO:
+        case ESC_COMBO:
             return true;
     }
     return false;
@@ -126,7 +151,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         switch (keycode) {
             case KC_ESC:
                 caps_word_off();
-                return false;
         }
     }
 
