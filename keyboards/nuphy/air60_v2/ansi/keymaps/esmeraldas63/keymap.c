@@ -16,8 +16,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include QMK_KEYBOARD_H
-#define C(kc) LCTL(kc)
 
+#define NAV     7
+#define UTILS   8
 #define SYM     10
 #define NUM     11
 
@@ -26,7 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define HOME_S LALT_T(KC_S)
 #define HOME_D LSFT_T(KC_D)
 #define HOME_F LCTL_T(KC_F)
-#define MOD_G LT(7, KC_G)
+// #define MOD_G LT(NAV, KC_G)
+#define MOD_G KC_G
 #define MOD_V LT(SYM, KC_V)
 
 // Right-hand home row mods
@@ -34,8 +36,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define HOME_K RSFT_T(KC_K)
 #define HOME_L LALT_T(KC_L)
 #define HOME_SCLN RGUI_T(KC_SCLN)
+// #define MOD_H LT(NUM, KC_H)
+#define MOD_H KC_H
 #define MOD_M LT(SYM, KC_M)
-#define MOD_H LT(NUM, KC_H)
 
 #define CBRD_HS LGUI(LSFT(KC_C))
 #define LOCK_PC LGUI(LCTL(KC_Q))
@@ -47,60 +50,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 enum combos {
     NAV_COMBO,
     ENTER_COMBO,
+    UNDERSCORE_COMBO,
     NUM_COMBO,
     CAPS_COMBO,
     ESC_COMBO,
+    BACKSPACE_COMBO,
+    TAB_COMBO,
 };
 
 const uint16_t PROGMEM df_combo[] = {HOME_D, HOME_F, COMBO_END};
-const uint16_t PROGMEM jk_combo[] = {HOME_J, HOME_K, COMBO_END};
+const uint16_t PROGMEM mcomm_combo[] = {MOD_M, KC_COMM, COMBO_END};
+const uint16_t PROGMEM cv_combo[] = {MOD_V, KC_C, COMBO_END};
 const uint16_t PROGMEM sd_combo[] = {HOME_S, HOME_D, COMBO_END};
+const uint16_t PROGMEM jk_combo[] = {HOME_J, HOME_K, COMBO_END};
+const uint16_t PROGMEM kl_combo[] = {HOME_K, HOME_L, COMBO_END};
 const uint16_t PROGMEM jkl_combo[] = {HOME_J, HOME_K, HOME_L, COMBO_END};
 const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
 
 combo_t key_combos[] = {
-    [NAV_COMBO] = COMBO_ACTION(df_combo),
-    [ENTER_COMBO] = COMBO_ACTION(jk_combo),
-    [NUM_COMBO] = COMBO_ACTION(jkl_combo),
-    [CAPS_COMBO] = COMBO_ACTION(sdf_combo),
-    [ESC_COMBO] = COMBO_ACTION(sd_combo),
+    [NAV_COMBO] = COMBO(df_combo, TG(NAV)),
+    [NUM_COMBO] = COMBO(jkl_combo, TG(NUM)),
+    [CAPS_COMBO] = COMBO(sdf_combo, CW_TOGG),
+    [ENTER_COMBO] = COMBO(kl_combo, KC_ENT),
+    [BACKSPACE_COMBO] = COMBO(mcomm_combo, KC_BSPC),
+    [TAB_COMBO] = COMBO(cv_combo, KC_TAB),
+    [UNDERSCORE_COMBO] = COMBO(jk_combo, KC_UNDS),
+    [ESC_COMBO] = COMBO(sd_combo, KC_ESC),
 };
-void process_combo_event(uint16_t combo_index, bool pressed) {
-    if (!pressed) {
-        return;
-    }
-
-    switch (combo_index) {
-        case NAV_COMBO:
-            layer_on(7);
-            break;
-
-        case NUM_COMBO:
-            layer_on(NUM);
-            break;
-
-        case CAPS_COMBO:
-            caps_word_on();
-            break;
-
-        case ENTER_COMBO:
-            tap_code(KC_ENT);
-            break;
-
-        case ESC_COMBO:
-            if (layer_state_is(7)) {
-               layer_off(7);
-            }
-            if (is_caps_word_on()) {
-               caps_word_off();
-            }
-            if (layer_state_is(NUM)) {
-               layer_off(NUM);
-            }
-            tap_code(KC_ESC);
-            break;
-    }
-}
 
 bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
     switch (combo_index) {
@@ -108,6 +84,7 @@ bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
         case NUM_COMBO:
         case CAPS_COMBO:
         case ENTER_COMBO:
+        case UNDERSCORE_COMBO:
         case ESC_COMBO:
             return true;
     }
@@ -117,14 +94,14 @@ bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!record->event.pressed) return true;
 
-    if (layer_state_is(7)) {
+    if (layer_state_is(NAV)) {
         switch (keycode) {
             case MOD_G:
             case KC_ESC:
-                layer_off(7);
+                layer_off(NAV);
                 return false;
             case KC_ENT:
-                layer_off(7);
+                layer_off(NAV);
                 tap_code(KC_ENT);
                 return false;
         }
@@ -139,7 +116,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case HOME_J:
             case HOME_K:
                 layer_off(NUM);
-                break;
+                return true;
             case KC_ENT:
                 layer_off(NUM);
                 tap_code(KC_ENT);
@@ -147,16 +124,49 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
     }
 
-    if (is_caps_word_on()) {
-        switch (keycode) {
-            case KC_ESC:
-                caps_word_off();
-        }
-    }
-
     return true;
 }
 
+bool is_flow_tap_key(uint16_t keycode) {
+    if ((get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) != 0) {
+        return false; // Disable Flow Tap on hotkeys.
+    }
+
+    switch (get_tap_keycode(keycode)) {
+        case KC_SPC:
+        case KC_A:
+        case KC_S:
+        case KC_H:
+        case KC_J:
+        case KC_L:
+        case KC_Z:
+        case KC_M:
+        case KC_V:
+        case KC_DOT:
+        case KC_COMM:
+        case KC_SLSH:
+            return true;
+    }
+
+    return false;
+}
+
+char chordal_hold_handedness(keypos_t key) {
+    if (key.row == MATRIX_ROWS - 1) {
+        return '*';
+    }
+
+    if (key.col >= 12) {
+        return '*';
+    }
+
+    // B :)
+    if (key.row == 4 && key.col == 6) {
+        return 'L';
+    }
+
+    return key.col <= 5 ? 'L' : 'R';
+}
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -164,9 +174,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [0] = LAYOUT(
 	KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
-	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	MOD_G,   	MOD_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_UNDS, 	            KC_ENT,
+	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	MOD_G,   	MOD_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
 	KC_LSFT,	KC_Z,   	KC_X,   	KC_C,  		MOD_V,   	KC_B,   	KC_N,   	MOD_M,   	KC_COMM,	KC_DOT,		KC_SLSH,	QK_REP,     KC_UP,		KC_DEL,
-	MO(1),	    KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(8),     QK_AREP,	KC_LEFT,	KC_DOWN,    KC_RGHT),
+	MO(1),	    KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(UTILS),     QK_AREP,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
 // layer 1 Mac fn
 [1] = LAYOUT(
@@ -218,7 +228,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 // layer 7 nav
-[7] = LAYOUT(
+[NAV] = LAYOUT(
 	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	_______,  	_______, 	_______, 	_______, 	_______, 	_______,
 	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	KC_DEL,  	KC_BSPC,  	KC_BTN5,  	KC_BTN4, 	KC_PGUP, 	_______, 	_______, 	_______,
 	_______, 	_______,    _______,	_______,    _______,    _______,   	KC_LEFT,   	KC_DOWN,   	KC_UP,  	KC_RIGHT,   _______,    _______,	            _______,
@@ -226,7 +236,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	_______,	_______,	_______,										KC_ENTER, 							_______,	_______,   	_______,	_______,    _______),
 
 // layer 8 utils
-[8] = LAYOUT(
+[UTILS] = LAYOUT(
     _______, 	KC_F1,  	KC_F2,  	KC_F3, 		KC_F4,  	KC_F5,  	KC_F6,  	KC_F7,  	KC_F8,  	KC_F9, 		KC_F10, 	KC_F11, 	KC_F12, 	_______,
 	_______, 	LOCK_PC,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	_______,  	MAC_OCR, 	KC_PSCR, 	_______, 	_______, 	_______,
 	_______, 	_______,    _______,	_______,    _______,    _______,   	_______,   	_______,   	_______,  	_______,    _______,    _______,	            _______,
@@ -326,44 +336,3 @@ const is31_led PROGMEM g_is31_leds[RGB_MATRIX_LED_COUNT] = {
     {1, A_9,    B_9,    C_9},       //
     {1, A_10,   B_10,   C_10}       //
 };
-
-bool is_flow_tap_key(uint16_t keycode) {
-    if ((get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) != 0) {
-        return false; // Disable Flow Tap on hotkeys.
-    }
-
-    switch (get_tap_keycode(keycode)) {
-        case KC_SPC:
-        case KC_A:
-        case KC_S:
-        case KC_H:
-        case KC_J:
-        case KC_L:
-        case KC_Z:
-        case KC_M:
-        case KC_V:
-        case KC_DOT:
-        case KC_COMM:
-        case KC_SLSH:
-            return true;
-    }
-
-    return false;
-}
-
-char chordal_hold_handedness(keypos_t key) {
-    if (key.row == MATRIX_ROWS - 1) {
-        return '*';
-    }
-
-    if (key.col >= 12) {
-        return '*';
-    }
-
-    // B :)
-    if (key.row == 4 && key.col == 6) {
-        return 'L';
-    }
-
-    return key.col <= 5 ? 'L' : 'R';
-}
