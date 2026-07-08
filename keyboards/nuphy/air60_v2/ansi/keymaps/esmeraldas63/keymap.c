@@ -49,6 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 enum combos {
     NAV_COMBO,
+    NAV_COMBO2,
     ENTER_COMBO,
     UNDERSCORE_COMBO,
     NUM_COMBO,
@@ -62,6 +63,7 @@ enum combos {
 };
 
 const uint16_t PROGMEM df_combo[] = {HOME_D, HOME_F, COMBO_END};
+const uint16_t PROGMEM updown_combo[] = {KC_UP, KC_DOWN, COMBO_END};
 const uint16_t PROGMEM mcomm_combo[] = {MOD_M, KC_COMM, COMBO_END};
 const uint16_t PROGMEM nm_combo[] = {KC_N, MOD_M, COMBO_END};
 const uint16_t PROGMEM cv_combo[] = {MOD_V, KC_C, COMBO_END};
@@ -75,6 +77,7 @@ const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
 
 combo_t key_combos[] = {
     [NAV_COMBO] = COMBO(kl_combo, TG(NAV)),
+    [NAV_COMBO2] = COMBO(updown_combo, TG(NAV)),
     [NUM_COMBO] = COMBO(jkl_combo, TG(NUM)),
     [CAPS_COMBO] = COMBO(sdf_combo, CW_TOGG),
     [ENTER_COMBO] = COMBO(df_combo, KC_ENT),
