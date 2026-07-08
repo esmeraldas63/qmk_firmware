@@ -63,7 +63,7 @@ enum combos {
 };
 
 const uint16_t PROGMEM df_combo[] = {HOME_D, HOME_F, COMBO_END};
-const uint16_t PROGMEM updown_combo[] = {KC_UP, KC_DOWN, COMBO_END};
+const uint16_t PROGMEM upright_combo[] = {KC_UP, KC_RGHT, COMBO_END};
 const uint16_t PROGMEM mcomm_combo[] = {MOD_M, KC_COMM, COMBO_END};
 const uint16_t PROGMEM nm_combo[] = {KC_N, MOD_M, COMBO_END};
 const uint16_t PROGMEM cv_combo[] = {MOD_V, KC_C, COMBO_END};
@@ -77,7 +77,7 @@ const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
 
 combo_t key_combos[] = {
     [NAV_COMBO] = COMBO(kl_combo, TG(NAV)),
-    [NAV_COMBO2] = COMBO(updown_combo, TG(NAV)),
+    [NAV_COMBO2] = COMBO(upright_combo, TG(NAV)),
     [NUM_COMBO] = COMBO(jkl_combo, TG(NUM)),
     [CAPS_COMBO] = COMBO(sdf_combo, CW_TOGG),
     [ENTER_COMBO] = COMBO(df_combo, KC_ENT),
@@ -348,3 +348,37 @@ const is31_led PROGMEM g_is31_leds[RGB_MATRIX_LED_COUNT] = {
     {1, A_9,    B_9,    C_9},       //
     {1, A_10,   B_10,   C_10}       //
 };
+
+bool rgb_matrix_indicators_user(void) {
+    uint8_t r = 0, g = 0, b = 0;
+
+    if (host_keyboard_led_state().caps_lock) {
+         r = 255; g = 0; b = 255;
+    } else if (is_caps_word_on()) {
+         r = 255; g = 0; b = 0;
+    } else {
+        switch (biton32(layer_state)) {
+            case NAV:
+                r = 0; g = 255; b = 0;
+                break;
+            case UTILS:
+                r = 255; g = 255; b = 0;
+                break;
+            case SYM:
+                r = 255; g = 0; b = 255;
+                break;
+            case NUM:
+                r = 0; g = 0; b = 255;
+                break;
+            default:
+                return true;
+        }
+    }
+    rgb_matrix_set_color(67, r, g, b);
+    rgb_matrix_set_color(70, r, g, b);
+    // for (int i = 64; i <= 73; i++) {
+    //     rgb_matrix_set_color(i, r, g, b);
+    // }
+
+    return true;
+}

@@ -59,7 +59,7 @@ const uint8_t side_led_index_tab[SIDE_LINE][2] =
 };
 
 
-uint8_t side_mode           = 0;
+uint8_t side_mode           = SIDE_OFF;
 uint8_t side_light          = 3;
 uint8_t side_speed          = 2;
 uint8_t side_rgb            = 1;
@@ -765,7 +765,7 @@ void device_reset_show(void)
  */
 void device_reset_init(void)
 {
-    side_mode       = 0;
+    side_mode       = SIDE_OFF;
     side_light      = 3;
     side_speed      = 2;
     side_rgb        = 1;
@@ -836,6 +836,11 @@ void rgb_test_show(void)
  */
 void m_side_led_show(void)
 {
+    uint8_t layer = biton32(layer_state);
+    if ((layer != 0 && layer != 3) || is_caps_word_on() || host_keyboard_led_state().caps_lock) {
+        return;
+    }
+
     side_play_cnt += timer_elapsed32(side_play_timer);
     side_play_timer = timer_read32();  // store time of last refresh
 
