@@ -27,8 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define HOME_S LALT_T(KC_S)
 #define HOME_D LSFT_T(KC_D)
 #define HOME_F LCTL_T(KC_F)
-// #define MOD_G LT(NAV, KC_G)
-#define MOD_G KC_G
+#define MOD_G LT(NAV, KC_G)
+// #define MOD_G KC_G
 #define MOD_V LT(SYM, KC_V)
 
 // Right-hand home row mods
@@ -56,14 +56,20 @@ enum combos {
     ESC_COMBO,
     BACKSPACE_COMBO,
     TAB_COMBO,
+    DELETE_WORD_COMBO,
+    HOME_COMBO,
+    END_COMBO,
 };
 
 const uint16_t PROGMEM df_combo[] = {HOME_D, HOME_F, COMBO_END};
 const uint16_t PROGMEM mcomm_combo[] = {MOD_M, KC_COMM, COMBO_END};
+const uint16_t PROGMEM nm_combo[] = {KC_N, MOD_M, COMBO_END};
 const uint16_t PROGMEM cv_combo[] = {MOD_V, KC_C, COMBO_END};
 const uint16_t PROGMEM sd_combo[] = {HOME_S, HOME_D, COMBO_END};
 const uint16_t PROGMEM jk_combo[] = {HOME_J, HOME_K, COMBO_END};
 const uint16_t PROGMEM kl_combo[] = {HOME_K, HOME_L, COMBO_END};
+const uint16_t PROGMEM xc_combo[] = {KC_X, KC_C, COMBO_END};
+const uint16_t PROGMEM dotcomm_combo[] = {KC_DOT, KC_COMM, COMBO_END};
 const uint16_t PROGMEM jkl_combo[] = {HOME_J, HOME_K, HOME_L, COMBO_END};
 const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
 
@@ -73,9 +79,12 @@ combo_t key_combos[] = {
     [CAPS_COMBO] = COMBO(sdf_combo, CW_TOGG),
     [ENTER_COMBO] = COMBO(kl_combo, KC_ENT),
     [BACKSPACE_COMBO] = COMBO(mcomm_combo, KC_BSPC),
+    [DELETE_WORD_COMBO] = COMBO(nm_combo, LALT(KC_BSPC)),
     [TAB_COMBO] = COMBO(cv_combo, KC_TAB),
     [UNDERSCORE_COMBO] = COMBO(jk_combo, KC_UNDS),
     [ESC_COMBO] = COMBO(sd_combo, KC_ESC),
+    [HOME_COMBO] = COMBO(xc_combo, KC_HOME),
+    [END_COMBO] = COMBO(dotcomm_combo, KC_END),
 };
 
 bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {

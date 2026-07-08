@@ -83,7 +83,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define QUICK_TAP_TERM 150
 
 #define SPECULATIVE_HOLD
-#define SPECULATIVE_HOLD_FLOW_TERM 250
+#define SPECULATIVE_HOLD_FLOW_TERM 350
 
 #define MK_KINETIC_SPEED
 #define MOUSEKEY_INITIAL_SPEED  10
