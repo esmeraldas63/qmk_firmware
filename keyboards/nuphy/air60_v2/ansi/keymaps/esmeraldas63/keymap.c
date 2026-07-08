@@ -74,10 +74,10 @@ const uint16_t PROGMEM jkl_combo[] = {HOME_J, HOME_K, HOME_L, COMBO_END};
 const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
 
 combo_t key_combos[] = {
-    [NAV_COMBO] = COMBO(df_combo, TG(NAV)),
+    [NAV_COMBO] = COMBO(kl_combo, TG(NAV)),
     [NUM_COMBO] = COMBO(jkl_combo, TG(NUM)),
     [CAPS_COMBO] = COMBO(sdf_combo, CW_TOGG),
-    [ENTER_COMBO] = COMBO(kl_combo, KC_ENT),
+    [ENTER_COMBO] = COMBO(df_combo, KC_ENT),
     [BACKSPACE_COMBO] = COMBO(mcomm_combo, KC_BSPC),
     [DELETE_WORD_COMBO] = COMBO(nm_combo, LALT(KC_BSPC)),
     [TAB_COMBO] = COMBO(cv_combo, KC_TAB),
