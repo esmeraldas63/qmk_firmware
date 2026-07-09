@@ -36,8 +36,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define HOME_K RSFT_T(KC_K)
 #define HOME_L LALT_T(KC_L)
 #define HOME_SCLN RGUI_T(KC_SCLN)
-// #define MOD_H LT(NUM, KC_H)
-#define MOD_H KC_H
+#define MOD_H LT(NUM, KC_H)
+// #define MOD_H KC_H
 #define MOD_M LT(SYM, KC_M)
 
 #define CBRD_HS LGUI(LSFT(KC_C))
@@ -81,8 +81,8 @@ combo_t key_combos[] = {
     [NUM_COMBO] = COMBO(jkl_combo, TG(NUM)),
     [CAPS_COMBO] = COMBO(sdf_combo, CW_TOGG),
     [ENTER_COMBO] = COMBO(df_combo, KC_ENT),
-    [BACKSPACE_COMBO] = COMBO(mcomm_combo, KC_BSPC),
-    [DELETE_WORD_COMBO] = COMBO(nm_combo, LALT(KC_BSPC)),
+    [BACKSPACE_COMBO] = COMBO(nm_combo, KC_BSPC),
+    [DELETE_WORD_COMBO] = COMBO(mcomm_combo, LALT(KC_BSPC)),
     [TAB_COMBO] = COMBO(cv_combo, KC_TAB),
     [UNDERSCORE_COMBO] = COMBO(jk_combo, KC_UNDS),
     [ESC_COMBO] = COMBO(sd_combo, KC_ESC),
