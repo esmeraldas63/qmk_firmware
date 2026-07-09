@@ -49,21 +49,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 enum combos {
     NAV_COMBO,
-    // NAV_COMBO2,
     ENTER_COMBO,
-    // UNDERSCORE_COMBO,
     NUM_COMBO,
     CAPS_COMBO,
     ESC_COMBO,
     BACKSPACE_COMBO,
+    DEL_COMBO,
     CTL_TAB_COMBO,
+    SFT_CTL_TAB_COMBO,
+    ALT_TAB_COMBOr,
     DELETE_WORD_COMBO,
     HOME_COMBO,
     END_COMBO,
 };
 
 const uint16_t PROGMEM df_combo[] = {HOME_D, HOME_F, COMBO_END};
-// const uint16_t PROGMEM upright_combo[] = {KC_UP, KC_RGHT, COMBO_END};
 const uint16_t PROGMEM mcomm_combo[] = {MOD_M, KC_COMM, COMBO_END};
 const uint16_t PROGMEM nm_combo[] = {KC_N, MOD_M, COMBO_END};
 const uint16_t PROGMEM cv_combo[] = {MOD_V, KC_C, COMBO_END};
@@ -71,20 +71,23 @@ const uint16_t PROGMEM sd_combo[] = {HOME_S, HOME_D, COMBO_END};
 const uint16_t PROGMEM jk_combo[] = {HOME_J, HOME_K, COMBO_END};
 const uint16_t PROGMEM kl_combo[] = {HOME_K, HOME_L, COMBO_END};
 const uint16_t PROGMEM xc_combo[] = {KC_X, KC_C, COMBO_END};
+const uint16_t PROGMEM we_combo[] = {KC_W, KC_E, COMBO_END};
+const uint16_t PROGMEM er_combo[] = {KC_E, KC_R, COMBO_END};
 const uint16_t PROGMEM dotcomm_combo[] = {KC_DOT, KC_COMM, COMBO_END};
 const uint16_t PROGMEM jkl_combo[] = {HOME_J, HOME_K, HOME_L, COMBO_END};
 const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
 
 combo_t key_combos[] = {
     [NAV_COMBO] = COMBO(cv_combo, TG(NAV)),
-    // [NAV_COMBO2] = COMBO(upright_combo, TG(NAV)),
     [NUM_COMBO] = COMBO(jkl_combo, TG(NUM)),
     [CAPS_COMBO] = COMBO(sdf_combo, CW_TOGG),
     [ENTER_COMBO] = COMBO(jk_combo, KC_ENT),
-    [BACKSPACE_COMBO] = COMBO(nm_combo, KC_BSPC),
+    [BACKSPACE_COMBO] = COMBO(mcomm_combo, KC_BSPC),
+    [DEL_COMBO] = COMBO(nm_combo, KC_BSPC),
     [DELETE_WORD_COMBO] = COMBO(kl_combo, LALT(KC_BSPC)),
-    [CTL_TAB_COMBO] = COMBO(sd_combo, LCTL(KC_TAB)),
-    // [UNDERSCORE_COMBO] = COMBO(kl_combo, KC_UNDS),
+    [CTL_TAB_COMBO] = COMBO(er_combo, LCTL(KC_TAB)),
+    [SFT_CTL_TAB_COMBO] = COMBO(we_combo, LSFT(LCTL(KC_TAB))),
+    [ALT_TAB_COMBO] = COMBO(sd_combo, LALT(KC_TAB)),
     [ESC_COMBO] = COMBO(df_combo, KC_ESC),
     [HOME_COMBO] = COMBO(xc_combo, KC_HOME),
     [END_COMBO] = COMBO(dotcomm_combo, KC_END),
@@ -92,7 +95,7 @@ combo_t key_combos[] = {
 
 bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
     switch (combo_index) {
-        case CTL_TAB_COMBO:
+        case ALT_TAB_COMBO:
         case NUM_COMBO:
         case CAPS_COMBO:
         case ENTER_COMBO:
