@@ -49,9 +49,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 enum combos {
     NAV_COMBO,
-    NAV_COMBO2,
+    // NAV_COMBO2,
     ENTER_COMBO,
-    UNDERSCORE_COMBO,
+    // UNDERSCORE_COMBO,
     NUM_COMBO,
     CAPS_COMBO,
     ESC_COMBO,
@@ -63,7 +63,7 @@ enum combos {
 };
 
 const uint16_t PROGMEM df_combo[] = {HOME_D, HOME_F, COMBO_END};
-const uint16_t PROGMEM upright_combo[] = {KC_UP, KC_RGHT, COMBO_END};
+// const uint16_t PROGMEM upright_combo[] = {KC_UP, KC_RGHT, COMBO_END};
 const uint16_t PROGMEM mcomm_combo[] = {MOD_M, KC_COMM, COMBO_END};
 const uint16_t PROGMEM nm_combo[] = {KC_N, MOD_M, COMBO_END};
 const uint16_t PROGMEM cv_combo[] = {MOD_V, KC_C, COMBO_END};
@@ -76,16 +76,16 @@ const uint16_t PROGMEM jkl_combo[] = {HOME_J, HOME_K, HOME_L, COMBO_END};
 const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
 
 combo_t key_combos[] = {
-    [NAV_COMBO] = COMBO(kl_combo, TG(NAV)),
-    [NAV_COMBO2] = COMBO(upright_combo, TG(NAV)),
+    [NAV_COMBO] = COMBO(sd_combo, TG(NAV)),
+    // [NAV_COMBO2] = COMBO(upright_combo, TG(NAV)),
     [NUM_COMBO] = COMBO(jkl_combo, TG(NUM)),
     [CAPS_COMBO] = COMBO(sdf_combo, CW_TOGG),
-    [ENTER_COMBO] = COMBO(df_combo, KC_ENT),
+    [ENTER_COMBO] = COMBO(jk_combo, KC_ENT),
     [BACKSPACE_COMBO] = COMBO(nm_combo, KC_BSPC),
-    [DELETE_WORD_COMBO] = COMBO(mcomm_combo, LALT(KC_BSPC)),
+    [DELETE_WORD_COMBO] = COMBO(kl_combo, LALT(KC_BSPC)),
     [TAB_COMBO] = COMBO(cv_combo, KC_TAB),
-    [UNDERSCORE_COMBO] = COMBO(jk_combo, KC_UNDS),
-    [ESC_COMBO] = COMBO(sd_combo, KC_ESC),
+    // [UNDERSCORE_COMBO] = COMBO(kl_combo, KC_UNDS),
+    [ESC_COMBO] = COMBO(df_combo, KC_ESC),
     [HOME_COMBO] = COMBO(xc_combo, KC_HOME),
     [END_COMBO] = COMBO(dotcomm_combo, KC_END),
 };
@@ -96,7 +96,7 @@ bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
         case NUM_COMBO:
         case CAPS_COMBO:
         case ENTER_COMBO:
-        case UNDERSCORE_COMBO:
+        case DELETE_WORD_COMBO:
         case ESC_COMBO:
             return true;
     }
@@ -149,6 +149,7 @@ bool is_flow_tap_key(uint16_t keycode) {
         case KC_A:
         case KC_S:
         case KC_H:
+        case KC_G:
         case KC_J:
         case KC_L:
         case KC_Z:
@@ -257,7 +258,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [SYM] = LAYOUT(
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-    _______, KC_GRV,  KC_LT,   KC_GT,   KC_MINS, KC_PIPE, KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  KC_BSLS, _______, _______, _______,
+    _______, KC_GRV,  KC_LT,   KC_GT,   KC_MINS, KC_PIPE, KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  KC_UNDS, _______, _______, _______,
     _______, KC_EXLM, KC_ASTR, KC_SLSH, KC_EQL,  KC_AMPR, KC_HASH, KC_LPRN, KC_RPRN, KC_SCLN, KC_DQUO, _______,          _______,
     _______, KC_TILD, KC_PLUS, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   KC_COLN, KC_COMM, KC_DOT,  KC_QUOT, _______, _______, _______,
     _______, _______, _______,                    _______,                    _______, _______, _______, _______, _______),
