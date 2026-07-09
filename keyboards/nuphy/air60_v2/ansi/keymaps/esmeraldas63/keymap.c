@@ -56,7 +56,7 @@ enum combos {
     CAPS_COMBO,
     ESC_COMBO,
     BACKSPACE_COMBO,
-    TAB_COMBO,
+    CTL_TAB_COMBO,
     DELETE_WORD_COMBO,
     HOME_COMBO,
     END_COMBO,
@@ -76,14 +76,14 @@ const uint16_t PROGMEM jkl_combo[] = {HOME_J, HOME_K, HOME_L, COMBO_END};
 const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
 
 combo_t key_combos[] = {
-    [NAV_COMBO] = COMBO(sd_combo, TG(NAV)),
+    [NAV_COMBO] = COMBO(cv_combo, TG(NAV)),
     // [NAV_COMBO2] = COMBO(upright_combo, TG(NAV)),
     [NUM_COMBO] = COMBO(jkl_combo, TG(NUM)),
     [CAPS_COMBO] = COMBO(sdf_combo, CW_TOGG),
     [ENTER_COMBO] = COMBO(jk_combo, KC_ENT),
     [BACKSPACE_COMBO] = COMBO(nm_combo, KC_BSPC),
     [DELETE_WORD_COMBO] = COMBO(kl_combo, LALT(KC_BSPC)),
-    [TAB_COMBO] = COMBO(cv_combo, KC_TAB),
+    [CTL_TAB_COMBO] = COMBO(sd_combo, LCTL(KC_TAB)),
     // [UNDERSCORE_COMBO] = COMBO(kl_combo, KC_UNDS),
     [ESC_COMBO] = COMBO(df_combo, KC_ESC),
     [HOME_COMBO] = COMBO(xc_combo, KC_HOME),
@@ -92,7 +92,7 @@ combo_t key_combos[] = {
 
 bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
     switch (combo_index) {
-        case NAV_COMBO:
+        case CTL_TAB_COMBO:
         case NUM_COMBO:
         case CAPS_COMBO:
         case ENTER_COMBO:
