@@ -357,7 +357,7 @@ bool rgb_matrix_indicators_user(void) {
     uint8_t r = 0, g = 0, b = 0;
 
     if (host_keyboard_led_state().caps_lock) {
-         r = 255; g = 0; b = 255;
+         r = 0; g = 155; b = 155;
     } else if (is_caps_word_on()) {
          r = 255; g = 0; b = 0;
     } else {
@@ -366,10 +366,10 @@ bool rgb_matrix_indicators_user(void) {
                 r = 0; g = 255; b = 0;
                 break;
             case UTILS:
-                r = 255; g = 255; b = 0;
+                r = 255; g = 155; b = 0;
                 break;
             case SYM:
-                r = 255; g = 0; b = 255;
+                r = 200; g = 0; b = 200;
                 break;
             case NUM:
                 r = 0; g = 0; b = 255;
