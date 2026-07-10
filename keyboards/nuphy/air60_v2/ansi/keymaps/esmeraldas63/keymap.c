@@ -57,7 +57,7 @@ enum combos {
     DEL_COMBO,
     CTL_TAB_COMBO,
     SFT_CTL_TAB_COMBO,
-    ALT_TAB_COMBOr,
+    ALT_TAB_COMBO,
     DELETE_WORD_COMBO,
     HOME_COMBO,
     END_COMBO,
@@ -71,7 +71,7 @@ const uint16_t PROGMEM sd_combo[] = {HOME_S, HOME_D, COMBO_END};
 const uint16_t PROGMEM jk_combo[] = {HOME_J, HOME_K, COMBO_END};
 const uint16_t PROGMEM kl_combo[] = {HOME_K, HOME_L, COMBO_END};
 const uint16_t PROGMEM xc_combo[] = {KC_X, KC_C, COMBO_END};
-const uint16_t PROGMEM we_combo[] = {KC_W, KC_E, COMBO_END};
+const uint16_t PROGMEM wq_combo[] = {KC_W, KC_Q, COMBO_END};
 const uint16_t PROGMEM er_combo[] = {KC_E, KC_R, COMBO_END};
 const uint16_t PROGMEM dotcomm_combo[] = {KC_DOT, KC_COMM, COMBO_END};
 const uint16_t PROGMEM jkl_combo[] = {HOME_J, HOME_K, HOME_L, COMBO_END};
@@ -86,7 +86,7 @@ combo_t key_combos[] = {
     [DEL_COMBO] = COMBO(nm_combo, KC_BSPC),
     [DELETE_WORD_COMBO] = COMBO(kl_combo, LALT(KC_BSPC)),
     [CTL_TAB_COMBO] = COMBO(er_combo, LCTL(KC_TAB)),
-    [SFT_CTL_TAB_COMBO] = COMBO(we_combo, LSFT(LCTL(KC_TAB))),
+    [SFT_CTL_TAB_COMBO] = COMBO(wq_combo, LSFT(LCTL(KC_TAB))),
     [ALT_TAB_COMBO] = COMBO(sd_combo, LALT(KC_TAB)),
     [ESC_COMBO] = COMBO(df_combo, KC_ESC),
     [HOME_COMBO] = COMBO(xc_combo, KC_HOME),
@@ -191,8 +191,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
 	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	MOD_G,   	MOD_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
-	KC_LSFT,	KC_Z,   	KC_X,   	KC_C,  		MOD_V,   	KC_B,   	KC_N,   	MOD_M,   	KC_COMM,	KC_DOT,		KC_SLSH,	QK_REP,     KC_UP,		KC_DEL,
-	MO(1),	    KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(UTILS),     QK_AREP,	KC_LEFT,	KC_DOWN,    KC_RGHT),
+	QK_REP,	    KC_Z,   	KC_X,   	KC_C,  		MOD_V,   	KC_B,   	KC_N,   	MOD_M,   	KC_COMM,	KC_DOT,		KC_SLSH,	KC_RSFT,     KC_UP,		KC_DEL,
+	MO(1),	    KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(UTILS), KC_RCTL,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
 // layer 1 Mac fn
 [1] = LAYOUT(
