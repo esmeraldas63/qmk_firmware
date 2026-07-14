@@ -56,6 +56,7 @@ enum combos {
     DELETE_WORD_COMBO,
     HOME_COMBO,
     END_COMBO,
+    TAB_COMBO
 };
 
 const uint16_t PROGMEM df_combo[] = {HOME_D, HOME_F, COMBO_END};
@@ -71,6 +72,7 @@ const uint16_t PROGMEM wq_combo[] = {KC_W, KC_Q, COMBO_END};
 const uint16_t PROGMEM er_combo[] = {KC_E, KC_R, COMBO_END};
 const uint16_t PROGMEM dotcomm_combo[] = {KC_DOT, KC_COMM, COMBO_END};
 const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
+const uint16_t PROGMEM sf_combo[] = {HOME_S, HOME_F, COMBO_END};
 
 combo_t key_combos[] = {
     [NAV_COMBO] = COMBO(fg_combo, TG(NAV)),
@@ -79,6 +81,7 @@ combo_t key_combos[] = {
     [ENTER_COMBO] = COMBO(jk_combo, KC_ENT),
     [BACKSPACE_COMBO] = COMBO(mcomm_combo, KC_BSPC),
     [DEL_COMBO] = COMBO(nm_combo, KC_BSPC),
+    [TAB_COMBO] = COMBO(sf_combo, KC_TAB),
     [DELETE_WORD_COMBO] = COMBO(kl_combo, LALT(KC_BSPC)),
     [CTL_TAB_COMBO] = COMBO(er_combo, LCTL(KC_TAB)),
     [SFT_CTL_TAB_COMBO] = COMBO(wq_combo, LSFT(LCTL(KC_TAB))),
@@ -96,6 +99,7 @@ bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
         case CAPS_COMBO:
         case ENTER_COMBO:
         case DELETE_WORD_COMBO:
+        case TAB_COMBO:
         case ESC_COMBO:
             return true;
     }
