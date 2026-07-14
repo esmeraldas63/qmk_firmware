@@ -63,7 +63,8 @@ enum combos {
     DELETE_WORD_COMBO,
     HOME_COMBO,
     END_COMBO,
-    TAB_COMBO
+    TAB_COMBO,
+    CLIPBOARD_HISTORY
 };
 
 const uint16_t PROGMEM df_combo[] = {HOME_D, HOME_F, COMBO_END};
@@ -75,7 +76,7 @@ const uint16_t PROGMEM sd_combo[] = {HOME_S, HOME_D, COMBO_END};
 const uint16_t PROGMEM jk_combo[] = {HOME_J, HOME_K, COMBO_END};
 const uint16_t PROGMEM kl_combo[] = {HOME_K, HOME_L, COMBO_END};
 const uint16_t PROGMEM xc_combo[] = {KC_X, KC_C, COMBO_END};
-const uint16_t PROGMEM wq_combo[] = {KC_W, KC_Q, COMBO_END};
+const uint16_t PROGMEM wr_combo[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM er_combo[] = {KC_E, KC_R, COMBO_END};
 const uint16_t PROGMEM dotcomm_combo[] = {KC_DOT, KC_COMM, COMBO_END};
 const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
@@ -92,11 +93,12 @@ combo_t key_combos[] = {
     [TAB_COMBO] = COMBO(sf_combo, KC_TAB),
     [DELETE_WORD_COMBO] = COMBO_ACTION(kl_combo),
     [CTL_TAB_COMBO] = COMBO(er_combo, LCTL(KC_TAB)),
-    [SFT_CTL_TAB_COMBO] = COMBO(wq_combo, LSFT(LCTL(KC_TAB))),
+    [SFT_CTL_TAB_COMBO] = COMBO(wr_combo, LSFT(LCTL(KC_TAB))),
     [ALT_TAB_COMBO] = COMBO(sd_combo, LALT(KC_TAB)),
     [ESC_COMBO] = COMBO(df_combo, KC_ESC),
     [HOME_COMBO] = COMBO(xc_combo, KC_HOME),
     [END_COMBO] = COMBO(dotcomm_combo, KC_END),
+    [CLIPBOARD_HISTORY] = COMBO_ACTION(xv_combo),
 };
 
 bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
@@ -109,11 +111,14 @@ bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
         case DELETE_WORD_COMBO:
         case TAB_COMBO:
         case ESC_COMBO:
+        case CLIPBOARD_HISTORY:
             return true;
     }
     return false;
 }
 
+static bool nav_locked = false;
+static bool num_locked = false;
 void process_combo_event(uint16_t combo_index, bool pressed) {
     switch (combo_index) {
         case DELETE_WORD_COMBO:
@@ -125,11 +130,16 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
                 }
             }
             break;
+        case CLIPBOARD_HISTORY:
+            if (pressed) {
+                tap_code16(CBRD_HS);
+                layer_move(NAV);
+                nav_locked = true;
+            }
+            break;
     }
 }
 
-static bool nav_locked = false;
-static bool num_locked = false;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!record->event.pressed) return true;
 
