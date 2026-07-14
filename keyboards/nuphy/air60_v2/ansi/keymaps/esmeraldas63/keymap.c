@@ -73,6 +73,8 @@ const uint16_t PROGMEM er_combo[] = {KC_E, KC_R, COMBO_END};
 const uint16_t PROGMEM dotcomm_combo[] = {KC_DOT, KC_COMM, COMBO_END};
 const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
 const uint16_t PROGMEM sf_combo[] = {HOME_S, HOME_F, COMBO_END};
+// TODO: assing to something
+const uint16_t PROGMEM xv_combo[] = {KC_X, HOME_V, COMBO_END};
 
 combo_t key_combos[] = {
     [NAV_COMBO] = COMBO(fg_combo, TG(NAV)),
