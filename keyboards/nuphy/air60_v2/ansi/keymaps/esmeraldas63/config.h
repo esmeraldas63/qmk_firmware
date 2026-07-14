@@ -97,6 +97,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MOUSEKEY_TIME_TO_MAX    32
 #define MOUSEKEY_MOVE_DELTA     1
 
-#define FLOW_TAP_TERM 100
+#define FLOW_TAP_TERM 125
 
 #define COMBO_MUST_TAP_PER_COMBO

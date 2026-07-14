@@ -153,30 +153,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
-bool is_flow_tap_key(uint16_t keycode) {
-    if ((get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) != 0) {
-        return false; // Disable Flow Tap on hotkeys.
+uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_keycode) {
+    // Only apply Flow Tap right after typing a letter or space, and not mid-hotkey.
+    if ((get_tap_keycode(prev_keycode) <= KC_Z || get_tap_keycode(prev_keycode) == KC_SPC) &&
+        (get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) == 0) {
+        switch (keycode) {
+            case HOME_A:
+            case HOME_Z:
+                return FLOW_TAP_TERM;
+
+            case HOME_V:
+            case HOME_M:
+                return FLOW_TAP_TERM - 25;
+        }
     }
 
-    switch (get_tap_keycode(keycode)) {
-        case KC_SPC:
-        case KC_A:
-        // case KC_S:
-        case KC_H:
-        case KC_G:
-        // case KC_J:
-        // case KC_L:
-        case KC_Z:
-        case KC_M:
-        case KC_V:
-        case KC_DOT:
-        // case KC_SCLN:
-        case KC_COMM:
-        case KC_SLSH:
-            return true;
-    }
-
-    return false;
+    return 0; // Disable Flow Tap otherwise.
 }
 
 char chordal_hold_handedness(keypos_t key) {
