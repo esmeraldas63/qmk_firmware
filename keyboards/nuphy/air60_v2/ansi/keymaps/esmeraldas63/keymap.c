@@ -168,7 +168,50 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
 
             case HOME_V:
             case HOME_M:
-                return FLOW_TAP_TERM - 25;
+                return FLOW_TAP_TERM - 50;
+
+            // exceptions for hrms that are often rolled but never combined
+            case HOME_S:
+                // alt + sym
+                if (prev_keycode == HOME_A) {
+                    return FLOW_TAP_TERM;
+                }
+                break;
+
+            case HOME_A:
+                // alt + sym
+                if (prev_keycode == HOME_S) {
+                    return FLOW_TAP_TERM;
+                }
+                break;
+
+            case HOME_D:
+                // alt + shift
+                if (prev_keycode == HOME_A) {
+                    return FLOW_TAP_TERM;
+                }
+                break;
+
+            case HOME_F:
+                // alt + nav
+                if (prev_keycode == HOME_A) {
+                    return FLOW_TAP_TERM;
+                }
+                break;
+
+            case HOME_L:
+                // shift + sym
+                if (prev_keycode == HOME_K) {
+                    return FLOW_TAP_TERM;
+                }
+                break;
+
+            case HOME_K:
+                // shift + sym
+                if (prev_keycode == HOME_L) {
+                    return FLOW_TAP_TERM;
+                }
+                break;
         }
     }
 
