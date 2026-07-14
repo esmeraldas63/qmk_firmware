@@ -37,7 +37,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define HOME_SCLN LALT_T(KC_SCLN)
 #define HOME_SLSH RGUI_T(KC_SLSH)
 #define HOME_M RCTL_T(KC_M)
-// TODO: make layer dismiss only when  its locked
 
 #define CBRD_HS LGUI(LSFT(KC_C))
 #define LOCK_PC LGUI(LCTL(KC_Q))
@@ -103,32 +102,49 @@ bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
     return false;
 }
 
+static bool nav_locked = false;
+static bool num_locked = false;
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!record->event.pressed) return true;
 
-    if (layer_state_is(NAV)) {
+    switch (keycode) {
+        case TG(NAV):
+            nav_locked = !nav_locked;
+            break;
+        case TG(NUM):
+            num_locked = !num_locked;
+            break;
+    }
+
+    if (layer_state_is(NAV) && nav_locked) {
         switch (keycode) {
             case KC_ESC:
                 layer_off(NAV);
+                nav_locked = false;
                 return false;
             case KC_ENT:
                 layer_off(NAV);
+                nav_locked = false;
                 tap_code(KC_ENT);
                 return false;
         }
     }
 
-    if (layer_state_is(NUM)) {
+    if (layer_state_is(NUM) && num_locked) {
         switch (keycode) {
             case KC_ESC:
                 layer_off(NUM);
+                num_locked = false;
                 return false;
             case HOME_J:
             case HOME_K:
                 layer_off(NUM);
+                num_locked = false;
                 return true;
             case KC_ENT:
                 layer_off(NUM);
+                num_locked = false;
                 tap_code(KC_ENT);
                 return false;
         }
