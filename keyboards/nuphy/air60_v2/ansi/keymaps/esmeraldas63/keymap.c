@@ -23,29 +23,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define NUM     11
 
 // Left-hand home row mods
-#define HOME_A LGUI_T(KC_A)
-#define HOME_S LALT_T(KC_S)
+#define HOME_Z LGUI_T(KC_Z)
+#define HOME_A LALT_T(KC_A)
+#define HOME_S LT(SYM, KC_S)
 #define HOME_D LSFT_T(KC_D)
-#define HOME_F LCTL_T(KC_F)
-#define MOD_G LT(NAV, KC_G)
-// #define MOD_G KC_G
-#define MOD_V LT(SYM, KC_V)
+#define HOME_F LT(NAV, KC_F)
+#define HOME_V LCTL_T(KC_V)
 
 // Right-hand home row mods
-#define HOME_J RCTL_T(KC_J)
+#define HOME_J LT(NUM, KC_J)
 #define HOME_K RSFT_T(KC_K)
-#define HOME_L LALT_T(KC_L)
-#define HOME_SCLN RGUI_T(KC_SCLN)
-#define MOD_H LT(NUM, KC_H)
-// #define MOD_H KC_H
-#define MOD_M LT(SYM, KC_M)
+#define HOME_L LT(SYM, KC_L)
+#define HOME_SCLN LALT_T(KC_SCLN)
+#define HOME_SLSH RGUI_T(KC_SLSH)
+#define HOME_M RCTL_T(KC_M)
+// TODO: make layer dismiss only when  its locked
 
 #define CBRD_HS LGUI(LSFT(KC_C))
 #define LOCK_PC LGUI(LCTL(KC_Q))
 #define MAC_OCR LALT(LGUI(LCTL(KC_O)))
-
-#define PREV_T LCTL(LSFT(KC_TAB))
-#define NEXT_T LCTL(KC_TAB)
 
 enum combos {
     NAV_COMBO,
@@ -64,9 +60,10 @@ enum combos {
 };
 
 const uint16_t PROGMEM df_combo[] = {HOME_D, HOME_F, COMBO_END};
-const uint16_t PROGMEM mcomm_combo[] = {MOD_M, KC_COMM, COMBO_END};
-const uint16_t PROGMEM nm_combo[] = {KC_N, MOD_M, COMBO_END};
-const uint16_t PROGMEM cv_combo[] = {MOD_V, KC_C, COMBO_END};
+const uint16_t PROGMEM mcomm_combo[] = {HOME_M, KC_COMM, COMBO_END};
+const uint16_t PROGMEM nm_combo[] = {KC_N, HOME_M, COMBO_END};
+const uint16_t PROGMEM fg_combo[] = {HOME_F, KC_G, COMBO_END};
+const uint16_t PROGMEM hj_combo[] = {HOME_J, KC_H, COMBO_END};
 const uint16_t PROGMEM sd_combo[] = {HOME_S, HOME_D, COMBO_END};
 const uint16_t PROGMEM jk_combo[] = {HOME_J, HOME_K, COMBO_END};
 const uint16_t PROGMEM kl_combo[] = {HOME_K, HOME_L, COMBO_END};
@@ -74,12 +71,11 @@ const uint16_t PROGMEM xc_combo[] = {KC_X, KC_C, COMBO_END};
 const uint16_t PROGMEM wq_combo[] = {KC_W, KC_Q, COMBO_END};
 const uint16_t PROGMEM er_combo[] = {KC_E, KC_R, COMBO_END};
 const uint16_t PROGMEM dotcomm_combo[] = {KC_DOT, KC_COMM, COMBO_END};
-const uint16_t PROGMEM jkl_combo[] = {HOME_J, HOME_K, HOME_L, COMBO_END};
 const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
 
 combo_t key_combos[] = {
-    [NAV_COMBO] = COMBO(cv_combo, TG(NAV)),
-    [NUM_COMBO] = COMBO(jkl_combo, TG(NUM)),
+    [NAV_COMBO] = COMBO(fg_combo, TG(NAV)),
+    [NUM_COMBO] = COMBO(hj_combo, TG(NUM)),
     [CAPS_COMBO] = COMBO(sdf_combo, CW_TOGG),
     [ENTER_COMBO] = COMBO(jk_combo, KC_ENT),
     [BACKSPACE_COMBO] = COMBO(mcomm_combo, KC_BSPC),
@@ -96,6 +92,7 @@ combo_t key_combos[] = {
 bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
     switch (combo_index) {
         case ALT_TAB_COMBO:
+        case NAV_COMBO:
         case NUM_COMBO:
         case CAPS_COMBO:
         case ENTER_COMBO:
@@ -111,7 +108,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     if (layer_state_is(NAV)) {
         switch (keycode) {
-            case MOD_G:
             case KC_ESC:
                 layer_off(NAV);
                 return false;
@@ -124,7 +120,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     if (layer_state_is(NUM)) {
         switch (keycode) {
-            case MOD_H:
             case KC_ESC:
                 layer_off(NUM);
                 return false;
@@ -150,15 +145,16 @@ bool is_flow_tap_key(uint16_t keycode) {
     switch (get_tap_keycode(keycode)) {
         case KC_SPC:
         case KC_A:
-        case KC_S:
+        // case KC_S:
         case KC_H:
-        // case KC_G:
-        case KC_J:
-        case KC_L:
+        case KC_G:
+        // case KC_J:
+        // case KC_L:
         case KC_Z:
-        // case KC_M:
-        // case KC_V:
+        case KC_M:
+        case KC_V:
         case KC_DOT:
+        case KC_SCLN:
         case KC_COMM:
         case KC_SLSH:
             return true;
@@ -190,8 +186,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [0] = LAYOUT(
 	KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
-	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	MOD_G,   	MOD_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
-	QK_REP,	    KC_Z,   	KC_X,   	KC_C,  		MOD_V,   	KC_B,   	KC_N,   	MOD_M,   	KC_COMM,	KC_DOT,		KC_SLSH,	KC_RSFT,     KC_UP,		KC_DEL,
+	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	KC_G,   	KC_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
+	KC_LSFT,    HOME_Z,   	KC_X,   	KC_C,  		HOME_V,   	KC_B,   	KC_N,   	HOME_M,   	KC_COMM,	KC_DOT,		HOME_SLSH,	QK_REP,     KC_UP,		KC_DEL,
 	MO(1),	    KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(UTILS), KC_RCTL,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
 // layer 1 Mac fn
@@ -268,9 +264,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [NUM] = LAYOUT(
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-    _______, KC_0,    KC_7,    KC_8,    KC_9,    _______, _______, _______, _______, _______, _______, _______, _______, _______,
-    _______, KC_0,    KC_4,    KC_5,    KC_6,    _______, _______, _______, _______, _______, _______, _______,          _______,
-    _______, KC_0,    KC_1,    KC_2,    KC_3,    _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, KC_PLUS, KC_7,    KC_8,    KC_9,    KC_MINS, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______, KC_0,    KC_4,    KC_5,    KC_6,    KC_PERC, KC_EQL,  _______, _______, _______, _______, _______,          _______,
+    _______, KC_ASTR, KC_1,    KC_2,    KC_3,    KC_SLSH, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______,                    KC_ENTER,                    _______, _______, _______, _______, _______),
 };
 
