@@ -17,10 +17,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 
-#define NAV     7
-#define UTILS   8
-#define SYM     10
-#define NUM     11
+#define MAC_BASE     0
+#define MAC_FN       1
+#define MAC_FN_SHIFT 2
+#define WIN_BASE     3
+#define WIN_FN       4
+#define WIN_FN_SHIFT 5
+#define EXTRA_FN     6
+#define NAV          7
+#define UTILS        8
+#define SYM          10
+#define NUM          11
 
 // Left-hand home row mods
 #define HOME_Z LGUI_T(KC_Z)
@@ -73,7 +80,6 @@ const uint16_t PROGMEM er_combo[] = {KC_E, KC_R, COMBO_END};
 const uint16_t PROGMEM dotcomm_combo[] = {KC_DOT, KC_COMM, COMBO_END};
 const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
 const uint16_t PROGMEM sf_combo[] = {HOME_S, HOME_F, COMBO_END};
-// TODO: assing to something
 const uint16_t PROGMEM xv_combo[] = {KC_X, HOME_V, COMBO_END};
 
 combo_t key_combos[] = {
@@ -84,7 +90,7 @@ combo_t key_combos[] = {
     [BACKSPACE_COMBO] = COMBO(mcomm_combo, KC_BSPC),
     [DEL_COMBO] = COMBO(nm_combo, KC_BSPC),
     [TAB_COMBO] = COMBO(sf_combo, KC_TAB),
-    [DELETE_WORD_COMBO] = COMBO(kl_combo, LALT(KC_BSPC)),
+    [DELETE_WORD_COMBO] = COMBO_ACTION(kl_combo),
     [CTL_TAB_COMBO] = COMBO(er_combo, LCTL(KC_TAB)),
     [SFT_CTL_TAB_COMBO] = COMBO(wq_combo, LSFT(LCTL(KC_TAB))),
     [ALT_TAB_COMBO] = COMBO(sd_combo, LALT(KC_TAB)),
@@ -108,9 +114,22 @@ bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
     return false;
 }
 
+void process_combo_event(uint16_t combo_index, bool pressed) {
+    switch (combo_index) {
+        case DELETE_WORD_COMBO:
+            if (pressed) {
+                if (get_highest_layer(default_layer_state) == WIN_BASE) {
+                    tap_code16(LCTL(KC_BSPC));
+                } else {
+                    tap_code16(LALT(KC_BSPC));
+                }
+            }
+            break;
+    }
+}
+
 static bool nav_locked = false;
 static bool num_locked = false;
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!record->event.pressed) return true;
 
@@ -180,13 +199,6 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
                 }
                 break;
 
-            case HOME_A:
-                // alt + sym
-                if (prev_keycode == HOME_S) {
-                    return FLOW_TAP_TERM;
-                }
-                break;
-
             case HOME_D:
                 // alt + shift
                 if (prev_keycode == HOME_A) {
@@ -239,23 +251,23 @@ char chordal_hold_handedness(keypos_t key) {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // layer 0 Mac
-[0] = LAYOUT(
+[MAC_BASE] = LAYOUT(
 	KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
 	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	KC_G,   	KC_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
 	KC_LSFT,    HOME_Z,   	KC_X,   	KC_C,  		HOME_V,   	KC_B,   	KC_N,   	HOME_M,   	KC_COMM,	KC_DOT,		HOME_SLSH,	QK_REP,     KC_UP,		KC_DEL,
-	MO(1),	    KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(UTILS), KC_RCTL,	KC_LEFT,	KC_DOWN,    KC_RGHT),
+	MO(MAC_FN), KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(UTILS), KC_RCTL,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
 // layer 1 Mac fn
-[1] = LAYOUT(
+[MAC_FN] = LAYOUT(
 	KC_GRV, 	KC_BRID,  	KC_BRIU,  	MAC_TASK, 	MAC_SEARCH, MAC_VOICE,  MAC_DND,  	KC_MPRV,  	KC_MPLY,  	KC_MNXT, 	KC_MUTE, 	KC_VOLD, 	KC_VOLU, 	_______,
 	_______, 	LNK_BLE1,  	LNK_BLE2,  	LNK_BLE3,  	LNK_RF,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	DEV_RESET,	SLEEP_MODE, BAT_SHOW,
 	_______, 	_______,   	_______,   	_______,  	_______,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	_______,	            _______,
-	MO(2),	    _______,   	_______,   	_______,  	_______,   	_______,   	_______,   	MO(6),   	RGB_SPD,	RGB_SPI,  	_______,	MO(6),  	RGB_VAI,    RGB_TOG,
+	MO(MAC_FN_SHIFT),	    _______,   	_______,   	_______,  	_______,   	_______,   	_______,   	MO(EXTRA_FN),   	RGB_SPD,	RGB_SPI,  	_______,	MO(EXTRA_FN),  	RGB_VAI,    RGB_TOG,
 	_______,	_______,	_______,										_______, 							_______,	_______,   	RGB_MOD,	RGB_VAD,    RGB_HUI),
 
 // layer 2 Mac Fn+shift
-[2] = LAYOUT(
+[MAC_FN_SHIFT] = LAYOUT(
 	SHIFT_GRV, 	KC_F1,  	KC_F2,  	KC_F3, 		KC_F4,  	KC_F5,  	KC_F6,  	KC_F7,  	KC_F8,  	KC_F9, 		KC_F10, 	KC_F11, 	KC_F12, 	_______,
 	_______, 	_______,  	_______,  	_______,  	_______,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	_______,	_______,    _______,
 	_______, 	_______,   	_______,   	_______,  	_______,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	_______,	            _______,
@@ -263,23 +275,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	_______,	_______,	_______,										_______, 							_______,	_______,   	_______,	_______,    _______),
 
 // layer 3 Win
-[0] = LAYOUT(
+[WIN_BASE] = LAYOUT(
 	KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
-	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	MOD_G,   	MOD_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
-	QK_REP,	    KC_Z,   	KC_X,   	KC_C,  		MOD_V,   	KC_B,   	KC_N,   	MOD_M,   	KC_COMM,	KC_DOT,		KC_SLSH,	KC_RSFT,     KC_UP,		KC_DEL,
-	MO(4),	    KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(UTILS), KC_RCTL,	KC_LEFT,	KC_DOWN,    KC_RGHT),
+	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	KC_G,   	KC_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
+	KC_LSFT,    HOME_Z,   	KC_X,   	KC_C,  		HOME_V,   	KC_B,   	KC_N,   	HOME_M,   	KC_COMM,	KC_DOT,		HOME_SLSH,	QK_REP,     KC_UP,		KC_DEL,
+	MO(WIN_FN),	    KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(UTILS), KC_RCTL,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
 // layer 4 win fn
-[4] = LAYOUT(
+[WIN_FN] = LAYOUT(
     SHIFT_GRV, 	KC_BRID,   	KC_BRIU,    _______,  	_______,   	_______,   	_______,   	KC_MPRV,   	KC_MPLY,   	KC_MNXT,  	KC_MUTE, 	KC_VOLD, 	KC_VOLU, 	_______,
 	_______, 	LNK_BLE1,  	LNK_BLE2,  	LNK_BLE3,  	LNK_RF,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	DEV_RESET,	SLEEP_MODE, BAT_SHOW,
 	_______, 	_______,   	_______,   	_______,  	_______,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	_______,	            _______,
-	MO(5),	    _______,   	_______,   	_______,  	_______,   	_______,   	_______,   	MO(6),   	RGB_SPD,	RGB_SPI,  	_______,	MO(5),  	RGB_VAI,    RGB_TOG,
+	MO(WIN_FN_SHIFT),	    _______,   	_______,   	_______,  	_______,   	_______,   	_______,   	MO(EXTRA_FN),   	RGB_SPD,	RGB_SPI,  	_______,	MO(WIN_FN_SHIFT),  	RGB_VAI,    RGB_TOG,
 	_______,	_______,	_______,										_______, 							_______,	_______,   	RGB_MOD,	RGB_VAD,    RGB_HUI),
 
 // layer 5 win fn+shift
-[5] = LAYOUT(
+[WIN_FN_SHIFT] = LAYOUT(
     KC_GRV, 	KC_F1,  	KC_F2,  	KC_F3, 		KC_F4,  	KC_F5,  	KC_F6,  	KC_F7,  	KC_F8,  	KC_F9, 		KC_F10, 	KC_F11, 	KC_F12, 	_______,
 	_______, 	_______,  	_______,  	_______,  	_______,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	_______,	_______,    _______,
 	_______, 	_______,   	_______,   	_______,  	_______,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	_______,	            _______,
@@ -287,7 +299,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	_______,	_______,	_______,										_______, 							_______,	_______,   	_______,	_______,    _______),
 
 // layer 6 function
-[6] = LAYOUT(
+[EXTRA_FN] = LAYOUT(
 	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	_______,  	_______, 	_______, 	_______, 	_______, 	_______,
 	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	_______,  	_______, 	_______, 	_______, 	_______, 	_______,
 	_______, 	_______,   	_______,   	_______,  	_______,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	_______,	            _______,
