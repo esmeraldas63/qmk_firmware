@@ -94,24 +94,24 @@ const uint16_t PROGMEM xv_combo[] = {KC_X, HOME_V, COMBO_END};
 
 combo_t key_combos[] = {
     [NAV_COMBO] = COMBO(fg_combo, TG(NAV)),
+    [NAV_LINUX_COMBO] = COMBO(fg_linux_combo, TG(LINUX_NAV)),
     [NUM_COMBO] = COMBO(hj_combo, TG(NUM)),
     [CAPS_COMBO] = COMBO(sdf_combo, CW_TOGG),
+    [CAPS_LINUX_COMBO] = COMBO(sdf_linux_combo, CW_TOGG),
     [ENTER_COMBO] = COMBO(jk_combo, KC_ENT),
     [PASTE_COMBO] = COMBO(mcomm_combo, LGUI(KC_V)),
     [COPY_ALL_COMBO] = COMBO_ACTION(nm_combo),
     [TAB_COMBO] = COMBO(sf_combo, KC_TAB),
+    [TAB_LINUX_COMBO] = COMBO(sf_linux_combo, KC_TAB),
     [DELETE_WORD_COMBO] = COMBO_ACTION(kl_combo),
     [CTL_TAB_COMBO] = COMBO(er_combo, LCTL(KC_TAB)),
     [SFT_CTL_TAB_COMBO] = COMBO(wr_combo, LSFT(LCTL(KC_TAB))),
     [ALT_TAB_COMBO] = COMBO(sd_combo, LALT(KC_TAB)),
     [ESC_COMBO] = COMBO(df_combo, KC_ESC),
+    [ESC_LINUX_COMBO] = COMBO(df_linux_combo, KC_ESC),
     [HOME_COMBO] = COMBO(xc_combo, KC_HOME),
     [END_COMBO] = COMBO(dotcomm_combo, KC_END),
     [CLIPBOARD_HISTORY] = COMBO_ACTION(xv_combo),
-    [NAV_LINUX_COMBO] = COMBO(fg_linux_combo, TG(LINUX_NAV)),
-    [CAPS_LINUX_COMBO] = COMBO(sdf_linux_combo, CW_TOGG),
-    [ESC_LINUX_COMBO] = COMBO(df_linux_combo, KC_ESC),
-    [TAB_LINUX_COMBO] = COMBO(sf_linux_combo, KC_TAB),
 };
 
 bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
