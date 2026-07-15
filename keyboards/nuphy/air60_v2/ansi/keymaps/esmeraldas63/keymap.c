@@ -19,14 +19,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MAC_BASE     0
 #define MAC_FN       1
 #define MAC_FN_SHIFT 2
-#define WIN_BASE     3
-#define WIN_FN       4
-#define WIN_FN_SHIFT 5
+#define LINUX_BASE   3
+#define LINUX_FN     4
+#define LINUX_FN_SHIFT 5
 #define EXTRA_FN     6
 #define NAV          7
-#define UTILS        8
-#define SYM          9
-#define NUM          10
+#define LINUX_NAV    8
+#define UTILS        9
+#define SYM          10
+#define NUM          11
 
 // Left-hand home row mods
 #define HOME_Z LGUI_T(KC_Z)
@@ -34,6 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define HOME_S LT(SYM, KC_S)
 #define HOME_D LSFT_T(KC_D)
 #define HOME_F LT(NAV, KC_F)
+#define HOME_F_LINUX LT(LINUX_NAV, KC_F)
 #define HOME_V LCTL_T(KC_V)
 
 // Right-hand home row mods
@@ -63,13 +65,19 @@ enum combos {
     HOME_COMBO,
     END_COMBO,
     TAB_COMBO,
-    CLIPBOARD_HISTORY
+    CLIPBOARD_HISTORY,
+    NAV_LINUX_COMBO,
+    CAPS_LINUX_COMBO,
+    ESC_LINUX_COMBO,
+    TAB_LINUX_COMBO
 };
 
 const uint16_t PROGMEM df_combo[] = {HOME_D, HOME_F, COMBO_END};
+const uint16_t PROGMEM df_linux_combo[] = {HOME_D, HOME_F_LINUX, COMBO_END};
 const uint16_t PROGMEM mcomm_combo[] = {HOME_M, KC_COMM, COMBO_END};
 const uint16_t PROGMEM nm_combo[] = {KC_N, HOME_M, COMBO_END};
 const uint16_t PROGMEM fg_combo[] = {HOME_F, KC_G, COMBO_END};
+const uint16_t PROGMEM fg_linux_combo[] = {HOME_F_LINUX, KC_G, COMBO_END};
 const uint16_t PROGMEM hj_combo[] = {HOME_J, KC_H, COMBO_END};
 const uint16_t PROGMEM sd_combo[] = {HOME_S, HOME_D, COMBO_END};
 const uint16_t PROGMEM jk_combo[] = {HOME_J, HOME_K, COMBO_END};
@@ -79,7 +87,9 @@ const uint16_t PROGMEM wr_combo[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM er_combo[] = {KC_E, KC_R, COMBO_END};
 const uint16_t PROGMEM dotcomm_combo[] = {KC_DOT, KC_COMM, COMBO_END};
 const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
+const uint16_t PROGMEM sdf_linux_combo[] = {HOME_S, HOME_D, HOME_F_LINUX, COMBO_END};
 const uint16_t PROGMEM sf_combo[] = {HOME_S, HOME_F, COMBO_END};
+const uint16_t PROGMEM sf_linux_combo[] = {HOME_S, HOME_F_LINUX, COMBO_END};
 const uint16_t PROGMEM xv_combo[] = {KC_X, HOME_V, COMBO_END};
 
 combo_t key_combos[] = {
@@ -98,18 +108,26 @@ combo_t key_combos[] = {
     [HOME_COMBO] = COMBO(xc_combo, KC_HOME),
     [END_COMBO] = COMBO(dotcomm_combo, KC_END),
     [CLIPBOARD_HISTORY] = COMBO_ACTION(xv_combo),
+    [NAV_LINUX_COMBO] = COMBO(fg_linux_combo, TG(LINUX_NAV)),
+    [CAPS_LINUX_COMBO] = COMBO(sdf_linux_combo, CW_TOGG),
+    [ESC_LINUX_COMBO] = COMBO(df_linux_combo, KC_ESC),
+    [TAB_LINUX_COMBO] = COMBO(sf_linux_combo, KC_TAB),
 };
 
 bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
     switch (combo_index) {
         case ALT_TAB_COMBO:
         case NAV_COMBO:
+        case NAV_LINUX_COMBO:
         case NUM_COMBO:
         case CAPS_COMBO:
+        case CAPS_LINUX_COMBO:
         case ENTER_COMBO:
         case DELETE_WORD_COMBO:
         case TAB_COMBO:
+        case TAB_LINUX_COMBO:
         case ESC_COMBO:
+        case ESC_LINUX_COMBO:
         case CLIPBOARD_HISTORY:
             return true;
     }
@@ -122,7 +140,7 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
     switch (combo_index) {
         case DELETE_WORD_COMBO:
             if (pressed) {
-                if (get_highest_layer(default_layer_state) == WIN_BASE) {
+                if (get_highest_layer(default_layer_state) == LINUX_BASE) {
                     tap_code16(LCTL(KC_BSPC));
                 } else {
                     tap_code16(LALT(KC_BSPC));
@@ -138,7 +156,11 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
         case CLIPBOARD_HISTORY:
             if (pressed) {
                 tap_code16(CBRD_HS);
-                layer_move(NAV);
+                if (get_highest_layer(default_layer_state) == LINUX_BASE) {
+                    layer_move(LINUX_NAV);
+                } else {
+                    layer_move(NAV);
+                }
                 nav_locked = true;
             }
             break;
@@ -150,6 +172,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     switch (keycode) {
         case TG(NAV):
+        case TG(LINUX_NAV):
             nav_locked = !nav_locked;
             break;
         case TG(NUM):
@@ -165,6 +188,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return false;
             case KC_ENT:
                 layer_off(NAV);
+                nav_locked = false;
+                tap_code(KC_ENT);
+                return false;
+        }
+    }
+
+    if (layer_state_is(LINUX_NAV) && nav_locked) {
+        switch (keycode) {
+            case KC_ESC:
+                layer_off(LINUX_NAV);
+                nav_locked = false;
+                return false;
+            case KC_ENT:
+                layer_off(LINUX_NAV);
                 nav_locked = false;
                 tap_code(KC_ENT);
                 return false;
@@ -222,6 +259,7 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
                 break;
 
             case HOME_F:
+            case HOME_F_LINUX:
                 // alt + nav
                 if (prev_keycode == HOME_A) {
                     return FLOW_TAP_TERM;
@@ -289,24 +327,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	_______,	_______,   	_______,   	RGB_TEST,  	_______,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,	_______, 	_______,    _______,
 	_______,	_______,	_______,										_______, 							_______,	_______,   	_______,	_______,    _______),
 
-// layer 3 Win
-[WIN_BASE] = LAYOUT(
+// layer 3 Linux
+[LINUX_BASE] = LAYOUT(
 	KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
-	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	KC_G,   	KC_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
+	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F_LINUX, KC_G,   	KC_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
 	KC_LSFT,    HOME_Z,   	KC_X,   	KC_C,  		HOME_V,   	KC_B,   	KC_N,   	HOME_M,   	KC_COMM,	KC_DOT,		HOME_SLSH,	QK_REP,     KC_UP,		KC_DEL,
-	MO(WIN_FN),	    KC_LALT,	KC_LGUI,										KC_SPC, 						OSL(UTILS), KC_RCTL,	KC_LEFT,	KC_DOWN,    KC_RGHT),
+	MO(LINUX_FN),	KC_LALT,	KC_LGUI,										KC_SPC, 						OSL(UTILS), KC_RCTL,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
-// layer 4 win fn
-[WIN_FN] = LAYOUT(
+// layer 4 linux fn
+[LINUX_FN] = LAYOUT(
     SHIFT_GRV, 	KC_BRID,   	KC_BRIU,    _______,  	_______,   	_______,   	_______,   	KC_MPRV,   	KC_MPLY,   	KC_MNXT,  	KC_MUTE, 	KC_VOLD, 	KC_VOLU, 	_______,
 	_______, 	LNK_BLE1,  	LNK_BLE2,  	LNK_BLE3,  	LNK_RF,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	DEV_RESET,	SLEEP_MODE, BAT_SHOW,
 	_______, 	_______,   	_______,   	_______,  	_______,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	_______,	            _______,
-	MO(WIN_FN_SHIFT),	    _______,   	_______,   	_______,  	_______,   	_______,   	_______,   	MO(EXTRA_FN),   	RGB_SPD,	RGB_SPI,  	_______,	MO(WIN_FN_SHIFT),  	RGB_VAI,    RGB_TOG,
+	MO(LINUX_FN_SHIFT),	    _______,   	_______,   	_______,  	_______,   	_______,   	_______,   	MO(EXTRA_FN),   	RGB_SPD,	RGB_SPI,  	_______,	MO(LINUX_FN_SHIFT),  	RGB_VAI,    RGB_TOG,
 	_______,	_______,	_______,										_______, 							_______,	_______,   	RGB_MOD,	RGB_VAD,    RGB_HUI),
 
-// layer 5 win fn+shift
-[WIN_FN_SHIFT] = LAYOUT(
+// layer 5 linux fn+shift
+[LINUX_FN_SHIFT] = LAYOUT(
     KC_GRV, 	KC_F1,  	KC_F2,  	KC_F3, 		KC_F4,  	KC_F5,  	KC_F6,  	KC_F7,  	KC_F8,  	KC_F9, 		KC_F10, 	KC_F11, 	KC_F12, 	_______,
 	_______, 	_______,  	_______,  	_______,  	_______,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	_______,	_______,    _______,
 	_______, 	_______,   	_______,   	_______,  	_______,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	_______,	            _______,
@@ -329,7 +367,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	_______,    _______,   	_______,   	QK_LLCK,  	_______,   	_______,   	KC_PGDN,    LALT(KC_BSPC), LALT(KC_LEFT), LALT(KC_RGHT),    _______,    _______,  	_______,    _______,
 	_______,	_______,	_______,										KC_ENTER, 							      _______,	        _______,   	_______,	_______,    _______),
 
-// layer 8 utils
+// layer 8 linux nav
+[LINUX_NAV] = LAYOUT(
+	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	   _______,  	  _______, 	        _______, 	_______, 	_______, 	_______,
+	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	KC_DEL,  	KC_BSPC,  	   KC_HOME,  	  KC_END, 	        KC_PGUP, 	_______, 	_______, 	_______,
+	_______, 	_______,    _______,	_______,    _______,    _______,   	KC_LEFT,   	KC_DOWN,   	   KC_UP,  	      KC_RIGHT,         _______,    _______,	            _______,
+	_______,    _______,   	_______,   	QK_LLCK,  	_______,   	_______,   	KC_PGDN,    LCTL(KC_BSPC), LCTL(KC_LEFT), LCTL(KC_RGHT),    _______,    _______,  	_______,    _______,
+	_______,	_______,	_______,										KC_ENTER, 							      _______,	        _______,   	_______,	_______,    _______),
+
+// layer 9 utils
 [UTILS] = LAYOUT(
     _______, 	KC_F1,  	KC_F2,  	KC_F3, 		KC_F4,  	KC_F5,  	KC_F6,  	KC_F7,  	KC_F8,  	KC_F9, 		KC_F10, 	KC_F11, 	KC_F12, 	_______,
 	_______, 	LOCK_PC,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	_______,  	MAC_OCR, 	KC_PSCR, 	_______, 	_______, 	_______,
@@ -441,6 +487,7 @@ bool rgb_matrix_indicators_user(void) {
     } else {
         switch (biton32(layer_state)) {
             case NAV:
+            case LINUX_NAV:
                 r = 0; g = 255; b = 0;
                 break;
             case UTILS:
