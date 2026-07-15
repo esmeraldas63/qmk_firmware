@@ -14,8 +14,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-//TODO: disable speculative hold for layers
-
 #include QMK_KEYBOARD_H
 
 #define MAC_BASE     0
@@ -291,7 +289,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
 	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	KC_G,   	KC_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
 	KC_LSFT,    HOME_Z,   	KC_X,   	KC_C,  		HOME_V,   	KC_B,   	KC_N,   	HOME_M,   	KC_COMM,	KC_DOT,		HOME_SLSH,	QK_REP,     KC_UP,		KC_DEL,
-	MO(WIN_FN),	    KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(UTILS), KC_RCTL,	KC_LEFT,	KC_DOWN,    KC_RGHT),
+	MO(WIN_FN),	    KC_LALT,	KC_LGUI,										KC_SPC, 						OSL(UTILS), KC_RCTL,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
 // layer 4 win fn
 [WIN_FN] = LAYOUT(
@@ -319,11 +317,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 // layer 7 nav
 [NAV] = LAYOUT(
-	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	_______,  	_______, 	_______, 	_______, 	_______, 	_______,
-	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	KC_DEL,  	KC_BSPC,  	KC_BTN5,  	KC_BTN4, 	KC_PGUP, 	_______, 	_______, 	_______,
-	_______, 	_______,    _______,	_______,    _______,    _______,   	KC_LEFT,   	KC_DOWN,   	KC_UP,  	KC_RIGHT,   _______,    _______,	            _______,
-	_______,    _______,   	_______,   	QK_LLCK,  	_______,   	_______,   	KC_PGDN,    _______,	KC_HOME,  	KC_END,	    _______,    _______,  	_______,    _______,
-	_______,	_______,	_______,										KC_ENTER, 							_______,	_______,   	_______,	_______,    _______),
+	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	_______,  	_______,  	   _______,  	  _______, 	        _______, 	_______, 	_______, 	_______,
+	_______, 	_______,  	_______,  	_______, 	_______,  	_______,  	KC_DEL,  	KC_BSPC,  	   KC_HOME,  	  KC_END, 	        KC_PGUP, 	_______, 	_______, 	_______,
+	_______, 	_______,    _______,	_______,    _______,    _______,   	KC_LEFT,   	KC_DOWN,   	   KC_UP,  	      KC_RIGHT,         _______,    _______,	            _______,
+	_______,    _______,   	_______,   	QK_LLCK,  	_______,   	_______,   	KC_PGDN,    LALT(KC_BSPC), LALT(KC_LEFT), LALT(KC_RGHT),    _______,    _______,  	_______,    _______,
+	_______,	_______,	_______,										KC_ENTER, 							      _______,	        _______,   	_______,	_______,    _______),
 
 // layer 8 utils
 [UTILS] = LAYOUT(
