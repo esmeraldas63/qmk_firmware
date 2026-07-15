@@ -14,6 +14,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+//TODO: disable speculative hold for layers
 
 #include QMK_KEYBOARD_H
 
@@ -89,7 +90,7 @@ combo_t key_combos[] = {
     [CAPS_COMBO] = COMBO(sdf_combo, CW_TOGG),
     [ENTER_COMBO] = COMBO(jk_combo, KC_ENT),
     [BACKSPACE_COMBO] = COMBO(mcomm_combo, KC_BSPC),
-    [DEL_COMBO] = COMBO(nm_combo, KC_BSPC),
+    [DEL_COMBO] = COMBO(nm_combo, KC_DEL),
     [TAB_COMBO] = COMBO(sf_combo, KC_TAB),
     [DELETE_WORD_COMBO] = COMBO_ACTION(kl_combo),
     [CTL_TAB_COMBO] = COMBO(er_combo, LCTL(KC_TAB)),
