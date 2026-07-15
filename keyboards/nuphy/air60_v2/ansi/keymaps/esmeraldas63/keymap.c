@@ -54,8 +54,8 @@ enum combos {
     NUM_COMBO,
     CAPS_COMBO,
     ESC_COMBO,
-    BACKSPACE_COMBO,
-    DEL_COMBO,
+    PASTE_COMBO,
+    COPY_ALL_COMBO,
     CTL_TAB_COMBO,
     SFT_CTL_TAB_COMBO,
     ALT_TAB_COMBO,
@@ -87,8 +87,8 @@ combo_t key_combos[] = {
     [NUM_COMBO] = COMBO(hj_combo, TG(NUM)),
     [CAPS_COMBO] = COMBO(sdf_combo, CW_TOGG),
     [ENTER_COMBO] = COMBO(jk_combo, KC_ENT),
-    [BACKSPACE_COMBO] = COMBO(mcomm_combo, KC_BSPC),
-    [DEL_COMBO] = COMBO(nm_combo, KC_DEL),
+    [PASTE_COMBO] = COMBO(mcomm_combo, LGUI(KC_V)),
+    [COPY_ALL_COMBO] = COMBO_ACTION(nm_combo),
     [TAB_COMBO] = COMBO(sf_combo, KC_TAB),
     [DELETE_WORD_COMBO] = COMBO_ACTION(kl_combo),
     [CTL_TAB_COMBO] = COMBO(er_combo, LCTL(KC_TAB)),
@@ -129,6 +129,12 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
                 }
             }
             break;
+        case COPY_ALL_COMBO:
+            if (pressed) {
+                tap_code16(LGUI(KC_A));
+                tap_code16(LGUI(KC_C));
+            }
+            break;  
         case CLIPBOARD_HISTORY:
             if (pressed) {
                 tap_code16(CBRD_HS);
