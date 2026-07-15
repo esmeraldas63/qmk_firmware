@@ -25,8 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define EXTRA_FN     6
 #define NAV          7
 #define UTILS        8
-#define SYM          10
-#define NUM          11
+#define SYM          9
+#define NUM          10
 
 // Left-hand home row mods
 #define HOME_Z LGUI_T(KC_Z)
