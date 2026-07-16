@@ -56,57 +56,36 @@ enum combos {
     NUM_COMBO,
     CAPS_COMBO,
     ESC_COMBO,
-    PASTE_COMBO,
-    COPY_ALL_COMBO,
     CTL_TAB_COMBO,
     SFT_CTL_TAB_COMBO,
-    ALT_TAB_COMBO,
-    DELETE_WORD_COMBO,
     HOME_COMBO,
     END_COMBO,
-    TAB_COMBO,
     CLIPBOARD_HISTORY,
-    NAV_LINUX_COMBO,
     CAPS_LINUX_COMBO,
-    ESC_LINUX_COMBO,
-    TAB_LINUX_COMBO
+    ESC_LINUX_COMBO
 };
 
 const uint16_t PROGMEM df_combo[] = {HOME_D, HOME_F, COMBO_END};
 const uint16_t PROGMEM df_linux_combo[] = {HOME_D, HOME_F_LINUX, COMBO_END};
 const uint16_t PROGMEM mcomm_combo[] = {HOME_M, KC_COMM, COMBO_END};
-const uint16_t PROGMEM nm_combo[] = {KC_N, HOME_M, COMBO_END};
-const uint16_t PROGMEM fg_combo[] = {HOME_F, KC_G, COMBO_END};
-const uint16_t PROGMEM fg_linux_combo[] = {HOME_F_LINUX, KC_G, COMBO_END};
-const uint16_t PROGMEM hj_combo[] = {HOME_J, KC_H, COMBO_END};
-const uint16_t PROGMEM sd_combo[] = {HOME_S, HOME_D, COMBO_END};
 const uint16_t PROGMEM jk_combo[] = {HOME_J, HOME_K, COMBO_END};
-const uint16_t PROGMEM kl_combo[] = {HOME_K, HOME_L, COMBO_END};
 const uint16_t PROGMEM xc_combo[] = {KC_X, KC_C, COMBO_END};
 const uint16_t PROGMEM wr_combo[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM er_combo[] = {KC_E, KC_R, COMBO_END};
 const uint16_t PROGMEM dotcomm_combo[] = {KC_DOT, KC_COMM, COMBO_END};
 const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
 const uint16_t PROGMEM sdf_linux_combo[] = {HOME_S, HOME_D, HOME_F_LINUX, COMBO_END};
-const uint16_t PROGMEM sf_combo[] = {HOME_S, HOME_F, COMBO_END};
-const uint16_t PROGMEM sf_linux_combo[] = {HOME_S, HOME_F_LINUX, COMBO_END};
 const uint16_t PROGMEM xv_combo[] = {KC_X, HOME_V, COMBO_END};
+const uint16_t PROGMEM cv_combo[] = {KC_C, HOME_V, COMBO_END};
 
 combo_t key_combos[] = {
-    [NAV_COMBO] = COMBO(fg_combo, TG(NAV)),
-    [NAV_LINUX_COMBO] = COMBO(fg_linux_combo, TG(LINUX_NAV)),
-    [NUM_COMBO] = COMBO(hj_combo, TG(NUM)),
+    [NAV_COMBO] = COMBO_ACTION(cv_combo),
+    [NUM_COMBO] = COMBO(mcomm_combo, TG(NUM)),
     [CAPS_COMBO] = COMBO(sdf_combo, CW_TOGG),
     [CAPS_LINUX_COMBO] = COMBO(sdf_linux_combo, CW_TOGG),
     [ENTER_COMBO] = COMBO(jk_combo, KC_ENT),
-    [PASTE_COMBO] = COMBO(mcomm_combo, LGUI(KC_V)),
-    [COPY_ALL_COMBO] = COMBO_ACTION(nm_combo),
-    [TAB_COMBO] = COMBO(sf_combo, KC_TAB),
-    [TAB_LINUX_COMBO] = COMBO(sf_linux_combo, KC_TAB),
-    [DELETE_WORD_COMBO] = COMBO_ACTION(kl_combo),
     [CTL_TAB_COMBO] = COMBO(er_combo, LCTL(KC_TAB)),
     [SFT_CTL_TAB_COMBO] = COMBO(wr_combo, LSFT(LCTL(KC_TAB))),
-    [ALT_TAB_COMBO] = COMBO(sd_combo, LALT(KC_TAB)),
     [ESC_COMBO] = COMBO(df_combo, KC_ESC),
     [ESC_LINUX_COMBO] = COMBO(df_linux_combo, KC_ESC),
     [HOME_COMBO] = COMBO(xc_combo, KC_HOME),
@@ -116,16 +95,11 @@ combo_t key_combos[] = {
 
 bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
     switch (combo_index) {
-        case ALT_TAB_COMBO:
         case NAV_COMBO:
-        case NAV_LINUX_COMBO:
         case NUM_COMBO:
         case CAPS_COMBO:
         case CAPS_LINUX_COMBO:
         case ENTER_COMBO:
-        case DELETE_WORD_COMBO:
-        case TAB_COMBO:
-        case TAB_LINUX_COMBO:
         case ESC_COMBO:
         case ESC_LINUX_COMBO:
         case CLIPBOARD_HISTORY:
@@ -138,21 +112,16 @@ static bool nav_locked = false;
 static bool num_locked = false;
 void process_combo_event(uint16_t combo_index, bool pressed) {
     switch (combo_index) {
-        case DELETE_WORD_COMBO:
+        case NAV_COMBO:
             if (pressed) {
                 if (get_highest_layer(default_layer_state) == LINUX_BASE) {
-                    tap_code16(LCTL(KC_BSPC));
+                    layer_invert(LINUX_NAV);
                 } else {
-                    tap_code16(LALT(KC_BSPC));
+                    layer_invert(NAV);
                 }
+                nav_locked = !nav_locked;
             }
             break;
-        case COPY_ALL_COMBO:
-            if (pressed) {
-                tap_code16(LGUI(KC_A));
-                tap_code16(LGUI(KC_C));
-            }
-            break;  
         case CLIPBOARD_HISTORY:
             if (pressed) {
                 tap_code16(CBRD_HS);
@@ -171,10 +140,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!record->event.pressed) return true;
 
     switch (keycode) {
-        case TG(NAV):
-        case TG(LINUX_NAV):
-            nav_locked = !nav_locked;
-            break;
         case TG(NUM):
             num_locked = !num_locked;
             break;
