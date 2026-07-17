@@ -30,21 +30,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define NUM          11
 
 // Left-hand home row mods
-#define HOME_Z LGUI_T(KC_Z)
-#define HOME_A LALT_T(KC_A)
+#define HOME_A LGUI_T(KC_A)
 #define HOME_S LT(SYM, KC_S)
 #define HOME_D LSFT_T(KC_D)
 #define HOME_F LT(NAV, KC_F)
 #define HOME_F_LINUX LT(LINUX_NAV, KC_F)
 #define HOME_V LCTL_T(KC_V)
+#define HOME_X LALT_T(KC_X)
 
 // Right-hand home row mods
 #define HOME_J LT(NUM, KC_J)
 #define HOME_K RSFT_T(KC_K)
 #define HOME_L LT(SYM, KC_L)
-#define HOME_SCLN LALT_T(KC_SCLN)
-#define HOME_SLSH RGUI_T(KC_SLSH)
+#define HOME_SCLN RGUI_T(KC_SCLN)
 #define HOME_M RCTL_T(KC_M)
+#define HOME_DOT LALT_T(KC_DOT)
 
 #define CBRD_HS LGUI(LSFT(KC_C))
 #define LOCK_PC LGUI(LCTL(KC_Q))
@@ -62,21 +62,23 @@ enum combos {
     END_COMBO,
     CLIPBOARD_HISTORY,
     CAPS_LINUX_COMBO,
-    ESC_LINUX_COMBO
+    ESC_LINUX_COMBO,
+    TAB_COMBO
 };
 
 const uint16_t PROGMEM df_combo[] = {HOME_D, HOME_F, COMBO_END};
 const uint16_t PROGMEM df_linux_combo[] = {HOME_D, HOME_F_LINUX, COMBO_END};
 const uint16_t PROGMEM mcomm_combo[] = {HOME_M, KC_COMM, COMBO_END};
 const uint16_t PROGMEM jk_combo[] = {HOME_J, HOME_K, COMBO_END};
-const uint16_t PROGMEM xc_combo[] = {KC_X, KC_C, COMBO_END};
+const uint16_t PROGMEM xc_combo[] = {HOME_X, KC_C, COMBO_END};
 const uint16_t PROGMEM wr_combo[] = {KC_W, KC_R, COMBO_END};
 const uint16_t PROGMEM er_combo[] = {KC_E, KC_R, COMBO_END};
-const uint16_t PROGMEM dotcomm_combo[] = {KC_DOT, KC_COMM, COMBO_END};
+const uint16_t PROGMEM dotcomm_combo[] = {HOME_DOT, KC_COMM, COMBO_END};
 const uint16_t PROGMEM sdf_combo[] = {HOME_S, HOME_D, HOME_F, COMBO_END};
 const uint16_t PROGMEM sdf_linux_combo[] = {HOME_S, HOME_D, HOME_F_LINUX, COMBO_END};
-const uint16_t PROGMEM xv_combo[] = {KC_X, HOME_V, COMBO_END};
+const uint16_t PROGMEM xv_combo[] = {HOME_X, HOME_V, COMBO_END};
 const uint16_t PROGMEM cv_combo[] = {KC_C, HOME_V, COMBO_END};
+const uint16_t PROGMEM sd_combo[] = {HOME_S, HOME_D, COMBO_END};
 
 combo_t key_combos[] = {
     [NAV_COMBO] = COMBO_ACTION(cv_combo),
@@ -91,6 +93,7 @@ combo_t key_combos[] = {
     [HOME_COMBO] = COMBO(xc_combo, KC_HOME),
     [END_COMBO] = COMBO(dotcomm_combo, KC_END),
     [CLIPBOARD_HISTORY] = COMBO_ACTION(xv_combo),
+    [TAB_COMBO] = COMBO(sd_combo, KC_TAB),
 };
 
 bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
@@ -103,6 +106,9 @@ bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
         case ESC_COMBO:
         case ESC_LINUX_COMBO:
         case CLIPBOARD_HISTORY:
+        case HOME_COMBO:
+        case END_COMBO:
+        case TAB_COMBO:
             return true;
     }
     return false;
@@ -201,14 +207,14 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
         (get_mods() & (MOD_MASK_CG | MOD_BIT_LALT)) == 0) {
         switch (keycode) {
             case HOME_A:
-            case HOME_Z:
+            case HOME_X:
                 return FLOW_TAP_TERM;
 
             case HOME_V:
             case HOME_M:
                 return FLOW_TAP_TERM - 50;
 
-            // exceptions for hrms that are often rolled but never combined
+            // exceptions for hrms that are often rolled but are rarely combined
             case HOME_S:
                 // alt + sym
                 if (prev_keycode == HOME_A) {
@@ -273,7 +279,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
 	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	KC_G,   	KC_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
-	KC_LSFT,    HOME_Z,   	KC_X,   	KC_C,  		HOME_V,   	KC_B,   	KC_N,   	HOME_M,   	KC_COMM,	KC_DOT,		HOME_SLSH,	QK_REP,     KC_UP,		KC_DEL,
+	KC_LSFT,    KC_Z,   	HOME_X,   	KC_C,  		HOME_V,   	KC_B,   	KC_N,   	HOME_M,   	KC_COMM,	HOME_DOT,	KC_SLSH,	QK_REP,     KC_UP,		KC_DEL,
 	MO(MAC_FN), KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(UTILS), KC_RCTL,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
 // layer 1 Mac fn
@@ -297,7 +303,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
 	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F_LINUX, KC_G,   	KC_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
-	KC_LSFT,    HOME_Z,   	KC_X,   	KC_C,  		HOME_V,   	KC_B,   	KC_N,   	HOME_M,   	KC_COMM,	KC_DOT,		HOME_SLSH,	QK_REP,     KC_UP,		KC_DEL,
+	KC_LSFT,    KC_Z,   	HOME_X,   	KC_C,  		HOME_V,   	KC_B,   	KC_N,   	HOME_M,   	KC_COMM,	HOME_DOT,	KC_SLSH,	QK_REP,     KC_UP,		KC_DEL,
 	MO(LINUX_FN),	KC_LALT,	KC_LGUI,										KC_SPC, 						OSL(UTILS), KC_RCTL,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
 // layer 4 linux fn
@@ -359,8 +365,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, KC_PLUS, KC_7,    KC_8,    KC_9,    KC_MINS, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, KC_0,    KC_4,    KC_5,    KC_6,    KC_PERC, KC_EQL,  _______, _______, _______, _______, _______,          _______,
-    _______, KC_ASTR, KC_1,    KC_2,    KC_3,    KC_SLSH, _______, _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______,                    KC_ENTER,                    _______, _______, _______, _______, _______),
+    _______, KC_ASTR, KC_1,    KC_2,    KC_3,    KC_SLSH, _______, _______, QK_LLCK, _______, _______, _______, _______, _______,
+    _______, _______, _______,                    _______,                    _______, _______, _______, _______, _______),
 };
 
 const is31_led PROGMEM g_is31_leds[RGB_MATRIX_LED_COUNT] = {
