@@ -63,7 +63,8 @@ enum combos {
     CLIPBOARD_HISTORY,
     CAPS_LINUX_COMBO,
     ESC_LINUX_COMBO,
-    TAB_COMBO
+    TAB_COMBO,
+    QUOT_COMBO
 };
 
 const uint16_t PROGMEM df_combo[] = {HOME_D, HOME_F, COMBO_END};
@@ -79,6 +80,7 @@ const uint16_t PROGMEM sdf_linux_combo[] = {HOME_S, HOME_D, HOME_F_LINUX, COMBO_
 const uint16_t PROGMEM xv_combo[] = {HOME_X, HOME_V, COMBO_END};
 const uint16_t PROGMEM cv_combo[] = {KC_C, HOME_V, COMBO_END};
 const uint16_t PROGMEM sd_combo[] = {HOME_S, HOME_D, COMBO_END};
+const uint16_t PROGMEM kl_combo[] = {HOME_K, HOME_L, COMBO_END};
 
 combo_t key_combos[] = {
     [NAV_COMBO] = COMBO_ACTION(cv_combo),
@@ -94,6 +96,7 @@ combo_t key_combos[] = {
     [END_COMBO] = COMBO(dotcomm_combo, KC_END),
     [CLIPBOARD_HISTORY] = COMBO_ACTION(xv_combo),
     [TAB_COMBO] = COMBO(sd_combo, KC_TAB),
+    [QUOT_COMBO] = COMBO(kl_combo, KC_QUOT),
 };
 
 bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
@@ -109,6 +112,7 @@ bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
         case HOME_COMBO:
         case END_COMBO:
         case TAB_COMBO:
+        case QUOT_COMBO:
             return true;
     }
     return false;
