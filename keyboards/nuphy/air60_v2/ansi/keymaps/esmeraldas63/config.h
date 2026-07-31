@@ -86,16 +86,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define SPECULATIVE_HOLD
 #define SPECULATIVE_HOLD_FLOW_TERM 150
 
-#define MK_KINETIC_SPEED
-#define MOUSEKEY_INITIAL_SPEED  10
-// #define MOUSEKEY_DECELERATED_SPEED 200
+// #define MK_KINETIC_SPEED
+// #define MOUSEKEY_INITIAL_SPEED  10
+// // #define MOUSEKEY_DECELERATED_SPEED 200
 
-#define MOUSEKEY_DELAY          30
-#define MOUSEKEY_INTERVAL       16
-#define MOUSEKEY_WHEEL_DELAY    30
-#define MOUSEKEY_MAX_SPEED      5
-#define MOUSEKEY_TIME_TO_MAX    32
-#define MOUSEKEY_MOVE_DELTA     1
+// #define MOUSEKEY_DELAY          30
+// #define MOUSEKEY_INTERVAL       16
+// #define MOUSEKEY_WHEEL_DELAY    30
+// #define MOUSEKEY_MAX_SPEED      5
+// #define MOUSEKEY_TIME_TO_MAX    32
+// #define MOUSEKEY_MOVE_DELTA     1
 
 #define FLOW_TAP_TERM 150
 

@@ -278,6 +278,10 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
             case HOME_M:
                 return FLOW_TAP_TERM - 50;
 
+            case HOME_F:
+            case HOME_J:
+                return FLOW_TAP_TERM - 100
+
             // exceptions for hrms that are often rolled but are rarely combined
             case HOME_S:
                 // alt + sym
@@ -317,7 +321,7 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
         }
     }
 
-    return 30; // Disable Flow Tap otherwise.
+    return 0; // Disable Flow Tap otherwise.
 }
 
 char chordal_hold_handedness(keypos_t key) {
