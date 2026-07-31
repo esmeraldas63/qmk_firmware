@@ -50,6 +50,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define LOCK_PC LGUI(LCTL(KC_Q))
 #define MAC_OCR LALT(LGUI(LCTL(KC_O)))
 
+enum custom_keycodes {
+    QUOP = SAFE_RANGE,
+    QUOD,
+};
+
 enum combos {
     NAV_COMBO,
     ENTER_COMBO,
@@ -146,7 +151,62 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
     }
 }
 
+static bool process_quopostrokey(uint16_t keycode, keyrecord_t* record) {
+    static bool within_word = false;
+
+    if (keycode == QUOP) {
+        if (record->event.pressed) {
+            if (within_word) {
+                tap_code(KC_QUOT);
+            } else {
+                SEND_STRING("''" SS_TAP(X_LEFT));
+            }
+        }
+        return false;
+    }
+
+    if (keycode == QUOD) {
+        if (record->event.pressed) {
+            if (within_word) {
+                tap_code(KC_DQUO);
+            } else {
+                SEND_STRING("\"\"" SS_TAP(X_LEFT));
+            }
+        }
+        return false;
+    }
+
+    switch (keycode) {  // Unpack tapping keycode for tap-hold keys.
+#ifndef NO_ACTION_TAPPING
+        case QK_MOD_TAP ... QK_MOD_TAP_MAX:
+            if (record->tap.count == 0) { return true; }
+            keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+            break;
+#ifndef NO_ACTION_LAYER
+        case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
+            if (record->tap.count == 0) { return true; }
+            keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
+            break;
+#endif  // NO_ACTION_LAYER
+#endif  // NO_ACTION_TAPPING
+    }
+
+    // Determine whether the key is a letter.
+    switch (keycode) {
+        case KC_A ... KC_Z:
+            within_word = true;
+            break;
+
+        default:
+            within_word = false;
+    }
+
+    return true;
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!process_quopostrokey(keycode, record)) { return false; }
+
     if (!record->event.pressed) return true;
 
     switch (keycode) {
@@ -362,7 +422,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, KC_GRV,  KC_LT,   KC_GT,   KC_MINS, KC_PIPE, KC_CIRC, KC_LCBR, KC_RCBR, KC_DLR,  KC_BSLS, _______, _______, _______,
     _______, KC_EXLM, KC_ASTR, KC_SLSH, KC_EQL,  KC_AMPR, KC_HASH, KC_LPRN, KC_RPRN, KC_SCLN, KC_UNDS, _______,          _______,
-    _______, KC_TILD, KC_PLUS, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   KC_COLN, KC_QUOT, KC_DQUO, KC_QUES, _______, _______, _______,
+    _______, KC_TILD, KC_PLUS, KC_LBRC, KC_RBRC, KC_PERC, KC_AT,   KC_COLN, QUOP,    QUOD,    KC_QUES, _______, _______, _______,
     _______, _______, _______,                    _______,                    _______, _______, _______, _______, _______),
 
 [NUM] = LAYOUT(
