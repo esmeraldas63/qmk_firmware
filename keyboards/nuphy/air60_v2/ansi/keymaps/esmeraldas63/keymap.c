@@ -50,7 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define LOCK_PC LGUI(LCTL(KC_Q))
 #define MAC_OCR LALT(LGUI(LCTL(KC_O)))
 
-enum custom_keycodes {
+enum keymap_keycodes {
     QUOP = SAFE_RANGE,
     QUOD,
 };
@@ -164,7 +164,7 @@ static bool process_quopostrokey(uint16_t keycode, keyrecord_t* record) {
     if (keycode == QUOD) {
         if (record->event.pressed) {
             if (within_word) {
-                tap_code(KC_DQUO);
+                tap_code16(KC_DQUO);
             } else {
                 SEND_STRING("\"\"" SS_TAP(X_LEFT));
             }
@@ -274,9 +274,6 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
             case HOME_M:
                 return FLOW_TAP_TERM - 50;
 
-            case HOME_F:
-            case HOME_J:
-                return FLOW_TAP_TERM - 100
 
             // exceptions for hrms that are often rolled but are rarely combined
             case HOME_S:
@@ -317,7 +314,7 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
         }
     }
 
-    return 0; // Disable Flow Tap otherwise.
+    return 30; // Disable Flow Tap otherwise.
 }
 
 char chordal_hold_handedness(keypos_t key) {
