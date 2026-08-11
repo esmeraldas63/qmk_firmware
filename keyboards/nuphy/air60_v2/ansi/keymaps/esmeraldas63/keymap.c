@@ -277,8 +277,7 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
 
             // exceptions for hrms that are often rolled but are rarely combined
             case HOME_S:
-                // alt + sym
-                if (prev_keycode == HOME_A) {
+                if (prev_keycode == HOME_A || prev_keycode == HOME_D) {
                     return FLOW_TAP_TERM;
                 }
                 break;
@@ -306,7 +305,6 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
                 break;
 
             case HOME_K:
-                // shift + sym
                 if (prev_keycode == HOME_L) {
                     return FLOW_TAP_TERM;
                 }
