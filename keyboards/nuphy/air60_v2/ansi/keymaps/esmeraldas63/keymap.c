@@ -277,14 +277,13 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
 
             // exceptions for hrms that are often rolled but are rarely combined
             case HOME_S:
-                if (prev_keycode == HOME_A || prev_keycode == HOME_D) {
+                if (prev_keycode == HOME_A) {
                     return FLOW_TAP_TERM;
                 }
                 break;
 
             case HOME_D:
-                // alt + shift
-                if (prev_keycode == HOME_A) {
+                if (prev_keycode == HOME_A || prev_keycode == HOME_S) {
                     return FLOW_TAP_TERM;
                 }
                 break;
@@ -315,6 +314,27 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
     return 0; // Disable Flow Tap otherwise.
 }
 
+bool caps_word_press_user(uint16_t keycode) {
+    switch (keycode) {
+        // Keycodes that continue Caps Word, with shift applied.
+        case KC_A ... KC_Z:
+        case KC_MINS:
+        case KC_SCLN:
+            add_weak_mods(MOD_BIT(KC_LSFT));
+            return true;
+
+        // Keycodes that continue Caps Word, without shifting.
+        case KC_1 ... KC_0:
+        case KC_BSPC:
+        case KC_DEL:
+        case KC_UNDS:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
 char chordal_hold_handedness(keypos_t key) {
     if (key.row == MATRIX_ROWS - 1) {
         return '*';
@@ -338,7 +358,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
 	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F,   	KC_G,   	KC_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
-	KC_LSFT,    KC_Z,   	HOME_X,   	KC_C,  		HOME_V,   	KC_B,   	KC_N,   	HOME_M,   	KC_COMM,	HOME_DOT,	KC_SLSH,	QK_REP,     KC_UP,		KC_DEL,
+	KC_LSFT,    KC_Z,   	HOME_X,   	KC_C,  		HOME_V,   	KC_B,   	KC_N,   	HOME_M,   	KC_COMM,	HOME_DOT,	KC_SLSH,	QK_REP,     KC_UP,		KC_RALT,
 	MO(MAC_FN), KC_LALT,	KC_LGUI,										KC_SPC, 							OSL(UTILS), KC_RCTL,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
 // layer 1 Mac fn
@@ -362,7 +382,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	KC_GRV, 	KC_1,   	KC_2,   	KC_3,  		KC_4,   	KC_5,   	KC_6,   	KC_7,   	KC_8,   	KC_9,  		KC_0,   	KC_MINS,	KC_EQL, 	KC_BSPC,
 	KC_TAB, 	KC_Q,   	KC_W,   	KC_E,  		KC_R,   	KC_T,   	KC_Y,   	KC_U,   	KC_I,   	KC_O,  		KC_P,   	KC_LBRC,	KC_RBRC, 	KC_BSLS,
 	KC_ESC,  	HOME_A,     HOME_S,     HOME_D,     HOME_F_LINUX, KC_G,   	KC_H,   	HOME_J,     HOME_K,     HOME_L,     HOME_SCLN,	KC_QUOT, 	            KC_ENT,
-	KC_LSFT,    KC_Z,   	HOME_X,   	KC_C,  		HOME_V,   	KC_B,   	KC_N,   	HOME_M,   	KC_COMM,	HOME_DOT,	KC_SLSH,	QK_REP,     KC_UP,		KC_DEL,
+	KC_LSFT,    KC_Z,   	HOME_X,   	KC_C,  		HOME_V,   	KC_B,   	KC_N,   	HOME_M,   	KC_COMM,	HOME_DOT,	KC_SLSH,	QK_REP,     KC_UP,		KC_RALT,
 	MO(LINUX_FN),	KC_LALT,	KC_LGUI,										KC_SPC, 						OSL(UTILS), KC_RCTL,	KC_LEFT,	KC_DOWN,    KC_RGHT),
 
 // layer 4 linux fn
