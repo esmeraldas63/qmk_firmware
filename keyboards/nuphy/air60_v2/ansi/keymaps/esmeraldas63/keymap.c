@@ -283,7 +283,7 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
                 break;
 
             case HOME_D:
-                if (prev_keycode == HOME_A || prev_keycode == HOME_S) {
+                if (prev_keycode == HOME_A) {
                     return FLOW_TAP_TERM;
                 }
                 break;
@@ -312,6 +312,18 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
     }
 
     return 0; // Disable Flow Tap otherwise.
+}
+
+bool get_speculative_hold(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case HOME_A:
+        case HOME_SCLN:
+        case HOME_V:
+        case HOME_M:
+            return true;
+    }
+
+    return false;
 }
 
 bool caps_word_press_user(uint16_t keycode) {
