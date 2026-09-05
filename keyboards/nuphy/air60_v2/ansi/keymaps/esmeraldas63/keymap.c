@@ -97,7 +97,7 @@ combo_t key_combos[] = {
     [ESC_LINUX_COMBO] = COMBO(df_linux_combo, KC_ESC),
     [HOME_COMBO] = COMBO(xc_combo, KC_HOME),
     [END_COMBO] = COMBO(dotcomm_combo, KC_END),
-    [CLIPBOARD_HISTORY] = COMBO_ACTION(xv_combo),
+    [CLIPBOARD_HISTORY] = COMBO(xv_combo, CBRD_HS),
     [TAB_COMBO] = COMBO(sd_combo, KC_TAB),
 };
 
@@ -131,17 +131,6 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
                     layer_invert(NAV);
                 }
                 nav_locked = !nav_locked;
-            }
-            break;
-        case CLIPBOARD_HISTORY:
-            if (pressed) {
-                tap_code16(CBRD_HS);
-                if (get_highest_layer(default_layer_state) == LINUX_BASE) {
-                    layer_move(LINUX_NAV);
-                } else {
-                    layer_move(NAV);
-                }
-                nav_locked = true;
             }
             break;
     }

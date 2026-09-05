@@ -100,4 +100,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define FLOW_TAP_TERM 150
 
 #define COMBO_MUST_TAP_PER_COMBO
-#define COMBO_TERM 35
+#define COMBO_TERM 30
