@@ -139,27 +139,21 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
 static bool process_quopostrokey(uint16_t keycode, keyrecord_t* record) {
     static bool within_word = false;
 
-    if (keycode == QUOP) {
+    if (keycode == QUOP || keycode == QUOD) {
         if (record->event.pressed) {
-            if (within_word) {
-                tap_code(KC_QUOT);
-            } else {
-                SEND_STRING("''" SS_TAP(X_LEFT));
+            const uint16_t quote = keycode == QUOP ? KC_QUOT : KC_DQUO;
+
+            tap_code16(quote);
+            if (!within_word) {
+                tap_code16(quote);
+                tap_code(KC_LEFT);
             }
         }
         return false;
     }
 
-    if (keycode == QUOD) {
-        if (record->event.pressed) {
-            if (within_word) {
-                tap_code16(KC_DQUO);
-            } else {
-                SEND_STRING("\"\"" SS_TAP(X_LEFT));
-            }
-        }
-        return false;
-    }
+    // Context is based on the last key press; releases must not reset it.
+    if (!record->event.pressed) { return true; }
 
     switch (keycode) {  // Unpack tapping keycode for tap-hold keys.
 #ifndef NO_ACTION_TAPPING
@@ -176,9 +170,10 @@ static bool process_quopostrokey(uint16_t keycode, keyrecord_t* record) {
 #endif  // NO_ACTION_TAPPING
     }
 
-    // Determine whether the key is a letter.
+    // Determine whether the key is a word character.
     switch (keycode) {
         case KC_A ... KC_Z:
+        case KC_1 ... KC_0:
             within_word = true;
             break;
 
